@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+   
+    <title>Student Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 20px;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .greeting {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #ffcc00; /* Yellow for greeting */
+        }
+
+        .job-container {
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .job-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .job-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+    margin: 9px;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+}
+
+.job-title {
+    margin: 0 0 10px;
+    font-size: 20px;
+    color: #2a7ae2;
+}
+
+.job-description {
+    font-size: 16px;
+    margin: 0 0 10px;
+    color: #555;
+}
+        .apply-button {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .apply-button:hover {
+            background-color: #0056b3;
+        }
+
+        .applied {
+            font-weight: bold;
+            color: green;
+        }
+
+        .logout-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background-color: #dc3545;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            width: 140px;
+            font-weight: bold;
+        }
+
+        .logout-button:hover {
+            background-color: #c82333;
+        }
+
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .job-title {
+                font-size: 1.3rem;
+            }
+
+            .apply-button {
+                font-size: 0.9rem;
+            }
+        }
+        .job-company{
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/logout" class="logout-button">Logout</a>
+    <div class="container">
+        <div class="greeting">
+            <h2>Hello, <%= user.username %>! Welcome to your dashboard.</h2>
+        </div>
+        <h2>Available Job Postings</h2>
+        <div class="job-list">
+            <% jobs.forEach(job => { %>
+                <div class="job-card">
+                    <h3 class="job-title"><%= job.title %></h3>
+                    <h3 class="job-company"><%= job.company %></h3>
+                    <p class="job-description"><%= job.description %></p>
+                    <% if (appliedJobs.includes(job._id.toString())) { %>
+                        <span class="applied">You have applied for this job.</span>
+                    <% } else { %>
+                        <button onclick="applyToJob('<%= job._id %>', '<%= user._id %>')" class="apply-button">Apply</button>
+                    <% } %>
+                    <div class="job-applicants"><%= job.applicants.length %> applicants</div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</body>
+
+<script>
+    async function applyToJob(jobId, userId) {
+        try {
+            const response = await fetch(`/apply/${jobId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userId }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(data.message); // Notify success
+                // Optionally update the UI to reflect the application status
+            } else {
+                alert(data.message); // Notify error
+            }
+        } catch (error) {
+            console.error('Error applying to job:', error);
+        }
+    }
+</script>
+
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRC Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url('https://images.pexels.com/photos/29463246/pexels-photo-29463246/free-photo-of-abstract-geometric-tunnel-with-3d-shapes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 50px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            width: 700px;
+        }
+        h1, h2, h3 {
+            color: #ffc107;
+        }
+        .form-group label {
+            color: #fff;
+        }
+        .btn-primary {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #000;
+        }
+        .btn-primary:hover {
+            background-color: #ffca2c;
+            border-color: #ffca2c;
+        }
+        table {
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        th {
+            background: #ffc107;
+            color: #000;
+        }
+        td {
+            padding: 15px;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .lgt{
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background-color: #dc3545;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            width: 140px;
+            font-weight: bold;
+        }
+        .lgt:hover{
+            text-decoration: none;
+            background: #f80b23;
+        }
+    </style>
+</head>
+<body>
+    <a href="/logout" class="lgt">Logout</a>
+    <div class="container">
+        <h1 class="text-center">Welcome to the CRC Dashboard!</h1>
+        <p class="text-center">Manage company-related tasks effectively.</p>
+        
+        <h3>Add a New Job Posting</h3>
+        <form action="/crc/post-job" method="POST">
+            <div class="form-group">
+                <label for="title">Job Title</label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="Enter job title" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Job Description</label>
+                <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter job description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="company">Company Name</label>
+                <input type="text" class="form-control" id="company" name="company" placeholder="Enter company name" required>
+            </div>
+          
+            <button type="submit" class="btn btn-primary">Post Job</button>
+        </form>
+
+        <h2 class="mt-5">Job Postings</h2>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Description</th>
+                    <th>Company</th>
+                    <th>Number of Applicants</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (jobs && jobs.length > 0) { %>
+                    <% jobs.forEach(job => { %>
+                        <tr>
+                            <td><%= job.title %></td>
+                            <td><%= job.description %></td>
+                            <td><%= job.company %></td>
+                            <td><%= job.applicants.length %></td>
+                            <td>
+                                <form action="/crc/delete-job/<%= job.id %>" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="5" class="text-center">No job postings available.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
