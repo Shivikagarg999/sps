@@ -37,31 +37,34 @@ app.get('/', (req, res) => {
 });
 app.post('/login', async (req, res) => {
     const { role, username, email, password } = req.body;
-            
-    try {
-      // Find the user by username and role
-      const user = await User.findOne({ username, role });
-  
-      // Check if user exists and password matches
-      if (!user || user.password !== password) {
-        return res.status(401).send('Invalid username or password.');
-      }
-  
-      // Set session userId after successful login
-      req.session.userId = user._id;
-  
-      res.cookie('authToken', 'secure-value', {
-        httpOnly: true,
-        secure: false, 
-        maxAge: 1000 * 60 * 60 * 24,
-    });
 
-    res.redirect(`/${role}/dashboard`);
+    try {
+        // Find the user by username and role
+        const user = await User.findOne({ username, role });
+
+        // Check if user exists and password matches
+        if (!user || user.password !== password) {
+            return res.status(401).send('Invalid username or password.');
+        }
+
+        // Set session userId after successful login
+        req.session.userId = user._id;
+
+        // Set the authentication cookie
+        res.cookie('authToken', 'secure-value', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Secure in production
+            maxAge: 1000 * 60 * 60 * 24, // 1 day
+        });
+
+        // Redirect to the role-specific dashboard
+        res.redirect(`/${role}/dashboard`);
     } catch (error) {
-      console.error('Error during login:', error);
-      return res.status(500).send('Internal server error.');
+        console.error('Error during login:', error.message);
+        return res.status(500).send('Internal server error.');
     }
-  });
+});
+
 app.get('/teacher/dashboard', async (req, res) => {
     try {
         const jobs = await Job.find(); // Fetch jobs from the database
@@ -132,7 +135,8 @@ app.get('/student/dashboard', isAuthenticated, async (req, res) => {
         }
 
 
-        const appliedJobIds = student.appliedJobs.map(job => job.toString());
+        const appliedJobIds = (student.appliedJobs || []).map(job => job.toString());
+
 
    
         res.render('studentDashboard', {
