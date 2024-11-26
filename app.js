@@ -125,29 +125,31 @@ function isAuthenticated(req, res, next) {
     }
     res.redirect('/'); 
 }
+
+
 app.get('/student/dashboard', isAuthenticated, async (req, res) => {
     try {
-        const jobs = await Job.find(); 
-        const student = await User.findById(req.session.userId); 
+        const student = await User.findById(req.session.userId).populate('appliedJobs'); // Populate applied jobs
         if (!student) {
             return res.status(404).send('Student not found.');
         }
 
+        const jobs = await Job.find(); // Get all available jobs for students to apply to
+        const appliedJobs = student.appliedJobs; // Get the full job objects from the populated field
 
-        const appliedJobIds = (student.appliedJobs || []).map(job => job.toString());
-
-
-   
         res.render('studentDashboard', {
-            jobs,                     
-            appliedJobs: appliedJobIds,
-            user: student   
+            jobs,                      // Available jobs
+            appliedJobs,               // Applied job objects with all job details
+            user: student              // Student details
         });
     } catch (error) {
         console.error('Error fetching student dashboard data:', error);
         res.status(500).send('Internal server error.');
     }
 });
+
+
+
 app.post('/crc/post-job', isAuthenticated, async (req, res) => {
     const { title, description, company, applyLink } = req.body;
 
