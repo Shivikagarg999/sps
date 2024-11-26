@@ -4,50 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRC Dashboard</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
             background-image: url('https://images.pexels.com/photos/29463246/pexels-photo-29463246/free-photo-of-abstract-geometric-tunnel-with-3d-shapes.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
             background-size: cover;
             background-position: center;
             color: #fff;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
         .container {
             background: rgba(0, 0, 0, 0.7);
-            border-radius: 10px;
-            padding: 30px;
-            margin-top: 50px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            width: 700px;
+            border-radius: 15px;
+            padding: 40px;
+            margin-top: 70px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         }
         h1, h2, h3 {
             color: #ffc107;
+            font-weight: 600;
         }
         .form-group label {
             color: #fff;
         }
         .btn-primary {
-            background-color: #ffc107;
-            border-color: #ffc107;
+            background: linear-gradient(45deg, #ff8c00, #ffc107);
+            border-color: #ff8c00;
             color: #000;
+            font-weight: 400;
+            width: 150px;
+            margin: 8px;
         }
         .btn-primary:hover {
-            background-color: #ffca2c;
+            background: linear-gradient(45deg, #ffca2c, #ff8c00);
             border-color: #ffca2c;
+        }
+        .btn-danger {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #e22f2f;
+            border-color: #e22f2f;
         }
         table {
             background: rgba(255, 255, 255, 0.9);
             color: #000;
             border-radius: 5px;
-            overflow: hidden;
+            margin-top: 30px;
         }
         th {
             background: #ffc107;
             color: #000;
+            font-weight: 600;
         }
         td {
-            padding: 15px;
+            padding: 12px;
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -55,9 +69,23 @@
         tr:hover {
             background-color: #f1f1f1;
         }
-        .lgt{
+        .card {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #ffc107;
+            color: #000;
+            font-weight: 600;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .lgt {
             display: block;
-            margin: 20px auto;
+            margin: 30px auto;
             padding: 10px 20px;
             font-size: 1rem;
             color: white;
@@ -71,9 +99,20 @@
             width: 140px;
             font-weight: bold;
         }
-        .lgt:hover{
+        .lgt:hover {
             text-decoration: none;
             background: #f80b23;
+        }
+        .btnn{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        p{
+            color: #000;
+            font: bold;
+            font-size: 22px;
         }
     </style>
 </head>
@@ -98,42 +137,36 @@
                 <input type="text" class="form-control" id="company" name="company" placeholder="Enter company name" required>
             </div>
           
+           <div class="btnn">
             <button type="submit" class="btn btn-primary">Post Job</button>
+           </div>
         </form>
 
         <h2 class="mt-5">Job Postings</h2>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Job Title</th>
-                    <th>Description</th>
-                    <th>Company</th>
-                    <th>Number of Applicants</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (jobs && jobs.length > 0) { %>
-                    <% jobs.forEach(job => { %>
-                        <tr>
-                            <td><%= job.title %></td>
-                            <td><%= job.description %></td>
-                            <td><%= job.company %></td>
-                            <td><%= job.applicants.length %></td>
-                            <td>
-                                <form action="/crc/delete-job/<%= job.id %>" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                    <% }) %>
-                <% } else { %>
-                    <tr>
-                        <td colspan="5" class="text-center">No job postings available.</td>
-                    </tr>
-                <% } %>
-            </tbody>
-        </table>
+        <% if (jobs && jobs.length > 0) { %>
+            <% jobs.forEach(job => { %>
+                <div class="card">
+                    <div class="card-header">
+                        <h5><%= job.title %></h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Company:</strong> <%= job.company %></p>
+                        <p><strong>Description:</strong> <%= job.description %></p>
+                        <p><strong>Applicants:</strong> <%= job.applicants.length %></p>
+                        <a href="/crc/view-applicants/<%= job.id %>" class="btn btn-info btn-sm">View Applicants</a>
+                        <form action="/crc/delete-job/<%= job.id %>" method="POST" style="display: inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="alert alert-warning text-center" role="alert">
+                No job postings available.
+            </div>
+        <% } %>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

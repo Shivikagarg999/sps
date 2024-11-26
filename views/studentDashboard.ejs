@@ -124,7 +124,11 @@
             width: 140px;
             font-weight: bold;
         }
-
+        .job-applicants{
+            color: black;
+            font-weight: bold;
+            margin: 5px;
+        }
         .logout-button:hover {
             background-color: #c82333;
         }
@@ -150,6 +154,7 @@
 
 <body>
     <a href="/logout" class="logout-button">Logout</a>
+    <a href="/uploadget" class="logout-button">Upload Resume</a>
     <div class="container">
         <div class="greeting">
             <h2>Hello, <%= user.username %>! Welcome to your dashboard.</h2>
@@ -161,41 +166,50 @@
                     <h3 class="job-title"><%= job.title %></h3>
                     <h3 class="job-company"><%= job.company %></h3>
                     <p class="job-description"><%= job.description %></p>
+                    
                     <% if (appliedJobs.includes(job._id.toString())) { %>
                         <span class="applied">You have applied for this job.</span>
                     <% } else { %>
-                        <button onclick="applyToJob('<%= job._id %>', '<%= user._id %>')" class="apply-button">Apply</button>
+                        <button 
+                            onclick="applyToJob('<%= job._id %>', '<%= user._id %>')" 
+                            class="apply-button">
+                            Apply
+                        </button>
                     <% } %>
+                    
                     <div class="job-applicants"><%= job.applicants.length %> applicants</div>
                 </div>
             <% }) %>
         </div>
+        
     </div>
 </body>
 
 <script>
-    async function applyToJob(jobId, userId) {
-        try {
-            const response = await fetch(`/apply/${jobId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ userId }),
-            });
+  async function applyToJob(jobId, userId) {
+    try {
+        const response = await fetch(`/apply/${jobId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId }),
+        });
 
-            const data = await response.json();
+        const data = await response.json();
 
-            if (response.ok) {
-                alert(data.message); // Notify success
-                // Optionally update the UI to reflect the application status
-            } else {
-                alert(data.message); // Notify error
-            }
-        } catch (error) {
-            console.error('Error applying to job:', error);
+        if (response.ok) {
+            alert(data.message); 
+            document.querySelector(`button[onclick="applyToJob('${jobId}', '${userId}')"]`).disabled = true;
+            document.querySelector(`button[onclick="applyToJob('${jobId}', '${userId}')"]`).textContent = 'Applied';
+        } else {
+            alert(data.message);
         }
+    } catch (error) {
+        console.error('Error applying to job:', error);
     }
+}
+
 </script>
 
 </html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applicants for Job</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        /* Container Styles */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .job-title {
+            font-size: 24px;
+            color: #343a40;
+            margin-bottom: 5px;
+        }
+
+        .company-name {
+            font-size: 20px;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .job-description {
+            font-size: 16px;
+            color: #495057;
+            margin-bottom: 30px;
+        }
+
+        /* Table Styles */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .table thead th {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .table tbody td {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table tbody tr:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+        /* No Applicants Message */
+        .no-applicants {
+            text-align: center;
+            font-size: 16px;
+            color: #6c757d;
+            margin-top: 20px;
+        }
+
+        /* Buttons */
+        .btn {
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            text-decoration: none;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #a71d2a;
+            text-decoration: none;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #19692c;
+            text-decoration: none;
+        }
+
+        .btn-sm {
+            font-size: 12px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container applicants-container">
+        <div class="header">
+            <h1 class="job-title">Applicants for <%= job.title %></h1>
+            <h2 class="company-name">at <%= job.company %></h2>
+            <p class="job-description"><%= job.description %></p>
+        </div>
+
+        <% if (job.applicants && job.applicants.length > 0) { %>
+            <table class="table table-hover applicants-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Roll Number</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% job.applicants.forEach(applicant => { %>
+                        <tr>
+                            <td><%= applicant.username %></td>
+                            <td><%= applicant.rollNumber || 'N/A' %></td>
+                            <td><%= applicant.email %></td>
+                            <td><%= applicant.contact || 'N/A' %></td>
+                            <td>
+                                <!-- <a href="<%= applicant.resume %>" target="_blank" class="btn btn-secondary btn-sm">View Resume</a>s -->
+                                <a href="mailto:<%= applicant.email %>" class="btn btn-primary btn-sm">Contact</a>
+                                <form action="/crc/shortlist/<%= job._id %>/<%= applicant._id %>" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-success btn-sm">Shortlist</button>
+                                </form>
+                            </td>
+                            
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p class="no-applicants">No applicants for this job yet.</p>
+        <% } %>
+
+        <h2>Shortlisted Candidates</h2>
+<% if (job.shortlisted && job.shortlisted.length > 0) { %>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Roll Number</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% job.shortlisted.forEach(applicant => { %>
+                <tr>
+                    <td><%= applicant.username %></td>
+                    <td><%= applicant.rollNumber || 'N/A' %></td>
+                    <td><%= applicant.email %></td>
+                    <td><%= applicant.contact || 'N/A' %></td>
+                    <td>
+                        <a href="mailto:<%= applicant.email %>" class="btn btn-primary btn-sm">Contact</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p>No shortlisted candidates yet.</p>
+<% } %>
+
+    </div>
+</body>
+</html>

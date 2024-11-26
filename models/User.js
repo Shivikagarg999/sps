@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true },
     role: { type: String, required: true },
     rollNumber: { type: String, required: function() { return this.role === 'student'; }},
+    resume: String,
   });
 
 
