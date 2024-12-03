@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            padding: 20px;
+        }
+
+        /* Navbar Styling */
+        nav {
+            background-color: #333;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            margin: 0 20px;
+            transition: color 0.3s ease;
+        }
+
+        /* Teacher Dashboard Link */
+        .dashboard-link {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FFD700; /* Gold color to make it stand out */
+        }
+
+        /* View Job Postings Link */
+        .jobs-link {
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        nav a:hover {
+            color: #007BFF;
+        }
+
+        /* Navbar Filter Form */
+        .filter-form {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-form select, .filter-form button {
+            padding: 8px 15px;
+            font-size: 1rem;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .filter-form select:hover, .filter-form button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Container for content */
+        .container {
+            max-width: 1200px;
+            margin: 100px auto 20px;
+            text-align: center;
+        }
+
+        h1, h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            color: black;
+            font: bold;
+        }
+
+        table th, table td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #333;
+            color: white;
+            font-weight: 600;
+        }
+
+        table td {
+            background-color: #f4f4f4;
+        }
+
+        table tr:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #f4f4f4;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .filter-form select, .filter-form button {
+                font-size: 1rem;
+                padding: 8px;
+            }
+
+            table th, table td {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .filter-form select, .filter-form button {
+                width: 100%;
+                font-size: 1rem;
+            }
+
+            table th, table td {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div>
+            <a href="/teacher/dashboard" class="dashboard-link">Teacher Dashboard</a>
+            <a href="/teacher/jobs" class="jobs-link">View Job Postings</a>
+            <a href="/teacher/jobs" class="jobs-link">View Analytics</a>
+        </div>
+        <!-- Filter Form in Navbar -->
+        <form method="GET" action="/teacher/dashboard" class="filter-form">
+            <label for="branch" style="color: white;">Filter by Branch:</label>
+            <select name="branch" id="branch">
+                <!-- Loop through branches and create dropdown options -->
+                <% branches.forEach(branch => { %>
+                    <option value="<%= branch %>" 
+                        <%= branch === selectedBranch ? 'selected' : '' %> >
+                        <%= branch %>
+                    </option>
+                <% }); %>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+    </nav>
+
+    <!-- Main content -->
+    <div class="container">
+        <h1>Welcome, Teacher!</h1>
+
+        <h2>Students List</h2>
+        <% if (students && students.length > 0) { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Branch</th>
+                        <th>Roll Number</th>
+                        <th>Applied Jobs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% students.forEach(student => { %>
+                        <tr>
+                            <td><%= student.username %></td>
+                            <td><%= student.branch %></td>
+                            <td><%= student.rollNumber %></td>
+                            <td><%= student.appliedJobs.length %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>No students found.</p>
+        <% } %>
+    </div>
+</body>
+</html>

@@ -1,24 +1,26 @@
-// Load environment variables from .env file
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const User = require('./models/User'); 
 const Job = require('./models/Job'); 
-require('dotenv').config();
+require('dotenv').config();  
 const fs = require('fs');
 const path = require('path');
-
+const multer = require('multer');
 const app = express();
-
-// Middleware to parse incoming request bodies
-app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true })); 
 app.use(express.json());
 app.use(session({
-    secret: 'your_secret_key', 
-    resave: false,
-    saveUninitialized: true,
-}));
+    secret: 'your-secret-key',  
+    resave: false,              // Prevent session from being saved when unmodified
+          saveUninitialized: true,    // Save session even if not modified
+    cookie: {
+      httpOnly: true,           // Ensures the cookie is sent only via HTTP(S)
+      maxAge: 1000 * 60 * 60 * 24, // 1 day cookie expiration
+    }
+  }));
+  app.use('/uploads', express.static(path.join('/data', 'uploads')));
 const connectDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI, {
@@ -34,7 +36,7 @@ const connectDB = async () => {
 connectDB();
 app.set('view engine', 'ejs');
 app.set('views', './views');
-app.get('/', (req, res) => {
+app.get('/', (req, res) => {                          
     res.render('index');
 });
 app.post('/login', async (req, res) => {
@@ -63,17 +65,16 @@ app.post('/login', async (req, res) => {
       console.error('Error during login:', error);
       return res.status(500).send('Internal server errorz.');
     }
-  });
-app.get('/teacher/dashboard', async (req, res) => {
-    try {
-        const jobs = await Job.find(); // Fetch jobs from the database
-        res.render('teacherDashboard', { jobs }); // Pass jobs to the template
-    } catch (error) {
-        console.error("Error fetching jobs:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
-
+});      
+// app.get('/teacher/dashboard', async (req, res) => {
+//     try {
+//         const jobs = await Job.find(); // Fetch jobs from the database
+//         res.render('teacherDashboard', { jobs }); // Pass jobs to the template
+//     } catch (error) {
+//         console.error("Error fetching jobs:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
 app.get('/crc/dashboard', isAuthenticated, async (req, res) => {
   try {
       const jobs = await Job.find(); // Fetch all job postings
@@ -86,9 +87,8 @@ app.get('/crc/dashboard', isAuthenticated, async (req, res) => {
 app.get('/register', (req, res) => {
     res.render('register');
 });
-
 app.post('/register', async (req, res) => {
-    const { username, password, email, role, rollNumber } = req.body;
+    const { username, password, email, role, branch, rollNumber } = req.body;
 
     try {
         // Check if the user already exists
@@ -102,31 +102,36 @@ app.post('/register', async (req, res) => {
             username,
             password,
             email,
+            branch, // Include branch
             role,
         });
 
         // Add role-specific fields
-        if (role === "student" && rollNumber) {
-            newUser.rollNumber = rollNumber;
+        if (role === "student") {
+            if (rollNumber) {
+                newUser.rollNumber = rollNumber;
+            }
+            if (branch) {
+                newUser.branch = branch; // Add branch to the student user
+            }
         }
+        
 
-        await newUser.save();
-        console.log(newUser)
+        await newUser.save(); // Save the user to the database
+        console.log('Registered User:', newUser);
+
         res.redirect('/'); // Redirect after successful registration
     } catch (err) {
         console.log('Error during registration:', err);
         res.render('register', { error: 'An error occurred during registration.' });
     }
 });
-
 function isAuthenticated(req, res, next) {
     if (req.session.userId) {
         return next(); 
     }
     res.redirect('/'); 
 }
-
-
 app.get('/student/dashboard', isAuthenticated, async (req, res) => {
     try {
         const student = await User.findById(req.session.userId).populate('appliedJobs'); // Populate applied jobs
@@ -147,15 +152,13 @@ app.get('/student/dashboard', isAuthenticated, async (req, res) => {
         res.status(500).send('Internal server error.');
     }
 });
-
-
-
 app.post('/crc/post-job', isAuthenticated, async (req, res) => {
-    const { title, description, company, applyLink } = req.body;
+    const { title, description,salary, company, applyLink } = req.body;
 
     const newJob = new Job({
         title,
         description,
+        salary,
         company,
         applicants: [] 
     });
@@ -198,7 +201,6 @@ app.get('/logout', (req, res) => {
         res.redirect('/crc/dashboard');
     });
 });
-
 app.post('/apply/:jobId', async (req, res) => {
     try {
         const { userId } = req.body; // The user's ID from the request
@@ -244,8 +246,10 @@ app.get('/crc/view-applicants/:jobId', isAuthenticated, async (req, res) => {
 
         // Find the job with its applicants and shortlisted candidates
         const job = await Job.findById(jobId)
-            .populate('applicants')  // Populate applicants
-            .populate('shortlisted'); // Populate shortlisted candidates
+            .populate('applicants')  
+            .populate('shortlisted')
+            .populate('interviewed')
+            .populate('placed');
 
         if (!job) {
             return res.status(404).send('Job not found.');
@@ -257,7 +261,6 @@ app.get('/crc/view-applicants/:jobId', isAuthenticated, async (req, res) => {
         res.status(500).send('Internal server error.');
     }
 });
-
 app.post('/crc/delete-applicant/:jobId/:applicantId', async (req, res) => {
     const { jobId, applicantId } = req.params;
     try {
@@ -297,50 +300,35 @@ app.post('/crc/shortlist/:jobId/:applicantId', async (req, res) => {
 
         await job.save();
 
+        // Redirect to the job applicants page with the jobId
         res.redirect(`/crc/view-applicants/${jobId}`);
     } catch (error) {
         console.error('Error shortlisting applicant:', error);
         res.status(500).send('Internal server error');
     }
 });
-
-const multer = require('multer');
-
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadDir = path.join(__dirname, 'uploads', 'resumes');
-        // Ensure the directory exists
+        const uploadDir = path.join('/data', 'uploads', 'resumes');
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
-        cb(null, uploadDir); // Save the file in the "uploads/resumes" folder
+        cb(null, uploadDir); 
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname); // Use a unique filename
+        cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
-
 const upload = multer({ storage });
-app.get('/uploadget', async (req, res) => {
+app.post('/upload-resume', upload.single('resume'), async (req, res) => {
+    console.log(req.file);  // Log the file object to check if it's coming through
+    
     try {
-        const userId = req.session.userId;  // Get the user ID from session
-        const user = await User.findById(userId);
-
-        if (!user) {
-            return res.status(404).send('User not found.');
+        if (!req.file) {
+            return res.status(400).send('No file uploaded.');
         }
 
-        // Pass the user object to the 'uploadget' view
-        res.render('uploadget', { user });
-    } catch (error) {
-        console.error('Error fetching user:', error);
-        res.status(500).send('Internal server error.');
-    }
-});
-
-app.post('/upload-resume', upload.single('resume'), async (req, res) => {
-    try {
-        const userId = req.session.userId; // Assuming session stores logged-in user ID
+        const userId = req.session.userId; 
         const user = await User.findById(userId);
 
         if (!user) {
@@ -350,10 +338,151 @@ app.post('/upload-resume', upload.single('resume'), async (req, res) => {
         user.resume = `/uploads/resumes/${req.file.filename}`;
         await user.save();
 
-        res.redirect('/student/dashboard'); // Redirect back to student dashboard
+        res.redirect('/student/dashboard'); 
     } catch (error) {
         console.error('Error uploading resume:', error);
         res.status(500).send('Error uploading resume.');
+    }
+});
+app.get('/profile', async (req, res) => {
+    try {
+        const student = await User.findById(req.session.userId).populate('appliedJobs'); // Populate applied jobs
+        if (!student) {
+            return res.status(404).send('Student not found.');
+        }
+
+        const jobs = await Job.find(); // Get all available jobs for students to apply to
+        const appliedJobs = student.appliedJobs; // Get the full job objects from the populated field
+
+        res.render('profile', {
+            jobs,                      // Available jobs
+            appliedJobs,               // Applied job objects with all job details
+            user: student              // Student details
+        });
+    } catch (error) {
+        console.error('Error fetching student dashboard data:', error);
+        res.status(500).send('Internal server error.');
+    }
+
+  
+});
+app.get('/appliedjobs', async (req, res) => {
+    try {
+        // Assuming the user is logged in and their ID is in the session
+        const userId = req.session.userId; // Modify as per your session setup
+        
+        // Fetch the user and their applied jobs from the database
+        const user = await User.findById(userId).populate('appliedJobs');
+        
+        // Render the appliedjobs.ejs page, passing the applied jobs data
+        res.render('appliedjobs', {
+            appliedJobs: user.appliedJobs, // Assuming appliedJobs is an array of job objects
+        });
+    } catch (error) {
+        console.error('Error fetching applied jobs:', error);
+        res.status(500).send('Server error');
+    }
+});
+app.post('/crc/interview/:jobId/:candidateId', async (req, res) => {
+    try {
+        const job = await Job.findById(req.params.jobId).populate('shortlisted interviewed placed');
+
+        if (!job) return res.status(404).send('Job not found');
+
+        const candidateId = req.params.candidateId;
+
+        // Ensure candidate is not already in the interviewed array
+        if (!job.interviewed.some(candidate => candidate._id.equals(candidateId))) {
+            job.interviewed.push(candidateId);
+        }
+
+        // Ensure the candidate is removed from the shortlisted array
+        job.shortlisted = job.shortlisted.filter(candidate => !candidate._id.equals(candidateId));
+
+        await job.save();
+
+        // Redirect to the correct applicants page
+        res.redirect(`/crc/view-applicants/${job._id}`);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+app.post('/crc/place/:jobId/:candidateId', async (req, res) => {
+    try {
+        const job = await Job.findById(req.params.jobId).populate('shortlisted interviewed placed');
+
+        if (!job) return res.status(404).send('Job not found');
+
+        const candidateId = req.params.candidateId;
+
+        // Ensure the candidate is only placed if they are already interviewed
+        if (!job.interviewed.some(candidate => candidate._id.toString() === candidateId)) {
+            return res.status(400).send('Candidate must be interviewed before being placed');
+        }
+
+        // Add candidate to placed array if not already there
+        if (!job.placed.includes(candidateId)) {
+            job.placed.push(candidateId);
+        }
+
+        // Remove candidate from the interviewed array
+        job.interviewed = job.interviewed.filter(candidate => candidate._id.toString() !== candidateId);
+
+        // Save the updated job document
+        await job.save();
+
+        // Redirect to the applicants page for the job
+        res.redirect(`/crc/view-applicants/${job._id}`);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+async function isTeacherAuthenticated(req, res, next) {
+    try {
+        // Use async/await for Mongoose queries
+        const user = await User.findById(req.session.userId);
+        
+        // Check if the user exists and if the role is teacher
+        if (user && user.role === 'teacher') {
+            return next(); // Proceed to the next middleware/route
+        }
+        
+        // If not authenticated, redirect to login page
+        res.redirect('/');
+    } catch (error) {
+        console.error('Error during teacher authentication:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+// Teacher route to view students
+app.get('/teacher/dashboard', isTeacherAuthenticated, async (req, res) => {
+    try {
+        const { branch } = req.query; // Get branch from query string
+        let students;
+        const jobs = await Job.find(); // Assuming Job is a model for job postings
+        // res.render('jobsPage', { jobs });
+        if (branch) {
+            students = await User.find({ role: 'student', branch }); // Filter by selected branch
+        } else {
+            students = await User.find({ role: 'student' }); // Show all students if no branch is selected
+        }
+
+        const branches = [
+            "Computer Science",
+            "Information Technology",
+            "Electronics and Communication",
+            "Mechanical Engineering",
+            "Civil Engineering",
+            "Electrical Engineering"
+        ]; // Update your branches list here
+
+        res.render('teacher', { students, branches, selectedBranch: branch });
+    } catch (error) {
+        console.error('Error fetching students:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 

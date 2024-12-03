@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true },
     role: { type: String, required: true },
     rollNumber: { type: String, required: function() { return this.role === 'student'; }},
+    branch: { type: String, required: function() { return this.role === 'student'; }},
     appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],
     resume: String,
   });

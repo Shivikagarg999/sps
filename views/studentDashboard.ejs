@@ -20,7 +20,6 @@
             background-size: cover;
             background-position: center;
             color: white;
-            padding: 20px;
             background-repeat: no-repeat;
             min-height: 100vh;
             width: 100%;
@@ -216,29 +215,200 @@
     margin: 10px 0;
 }
 
-
+.job-salary{
+    color: black;
+}
 /* No applied jobs message */
 .no-applied-jobs {
     font-size: 16px;
     color: #888;
     margin-top: 20px;
 }
-.appjobs{
+/* Container for the applied jobs */
+.appjobs {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.appjobs h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Applied Jobs List */
+.applied-jobs-list {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    flex-direction: column;
+    flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
+    gap: 20px;
+    justify-content: center; /* Center the cards */
+}
+
+/* Applied Job Card */
+.applied-job-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    width: 300px; /* Fixed width for consistency */
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.applied-job-card:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Job Title */
+.applied-job-card h3 {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #007bff;
+}
+
+/* Job Description */
+.applied-job-card p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .applied-job-card {
+        width: 100%; /* Full width on smaller screens */
+    }
+
+    .appjobs h2 {
+        font-size: 20px; /* Smaller font size for heading */
+    }
+
+    .applied-job-card h3 {
+        font-size: 16px; /* Adjust title size */
+    }
+
+    .applied-job-card p {
+        font-size: 13px; /* Smaller font size for description */
+    }
+}
+
+@media (max-width: 480px) {
+    .appjobs {
+        padding: 10px; /* Reduce padding on smaller screens */
+    }
+
+    .applied-job-card {
+        padding: 10px; /* Compact padding */
+    }
+
+    .applied-job-card h3 {
+        font-size: 14px; /* Further adjust title size */
+    }
+
+    .applied-job-card p {
+        font-size: 12px; /* Smaller font for description */
+    }
+}
+h3{
+    color: black;
 }
 p{
     color: black;
 }
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 30px 20px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #ffcc00;
+}
+
+.navbar-logo a {
+    text-decoration: none;
+    color: #ffcc00;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+}
+
+.navbar-links li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.navbar-links li a:hover {
+    color: #ffcc00;
+}
+
+/* Mobile Menu Toggle */
+.navbar-toggle {
+    display: none;
+    cursor: pointer;
+}
+
+.navbar-toggle i {
+    color: white;
+    font-size: 1.5rem;
+}
+
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+    .navbar-links {
+        display: none;
+        flex-direction: column;
+        background: rgba(0, 0, 0, 0.9);
+        position: absolute;
+        top: 50px;
+        right: 0;
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .navbar-links.active {
+        display: flex;
+    }
+
+    .navbar-toggle {
+        display: block;
+    }
+}
+
     </style>
 </head>
 
 <body>
-    <a href="/logout" class="logout-button">Logout</a>
-    <a href="/uploadget" class="logout-button">Upload Resume</a>
+    <!-- <a href="/logout" class="logout-button">Logout</a>
+    <a href="/uploadget" class="logout-button">Upload Resume</a> -->
+    <header>
+        <nav class="navbar">
+            <div class="navbar-logo">
+                <a href="/">My Dashboard</a>
+            </div>
+            <ul class="navbar-links">
+                <li><a href="/profile">My Profile</a></li>
+                <li><a href="/appliedjobs">Applied Jobs</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+            <div class="navbar-toggle" id="navbarToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
     <div class="container">
         <div class="greeting">
             <h2>Hello, <%= user.username %>! Welcome to your dashboard.</h2>
@@ -247,9 +417,10 @@ p{
         <div class="job-list">
             <% jobs.forEach(job => { %>
                 <div class="job-card">
-                  <h2>title:</h2>  <h3 class="job-title"><%= job.title %></h3>
+                    <h3 class="job-title"><%= job.title %></h3>
                     <h3 class="job-company"><%= job.company %></h3>
                     <p class="job-description"><%= job.description %></p>
+                    <p>Salary range:</p><p class="job-salary"><%= job.salary %></p>
                     
                     <% if (appliedJobs.includes(job._id.toString())) { %>
                         <span class="applied">You have applied for this job.</span>
@@ -267,24 +438,6 @@ p{
         </div>
         
     </div>
-<div class="appjobs">
-    <h2>Your Applied Jobs</h2>
-
-    <% if (appliedJobs.length > 0) { %>
-        <div class="applied-jobs-list">
-            <% appliedJobs.forEach(job => { %>
-                <div class="applied-job-card">
-                    <h3 class="job-title"><%= job.title %></h3>
-                    <h3 class="job-company"><%= job.company %></h3>
-                    <p><%= job.description %></p>
-                    <!-- <a href="/crc/view-applicants/<%= job._id %>" class="btn btn-info">View Applicants</a> -->
-                </div>
-            <% }) %>
-        </div>
-    <% } else { %>
-        <p>No applied jobs yet.</p>
-    <% } %>
-</div>
 </body>
 
 <script>
@@ -311,6 +464,14 @@ p{
         console.error('Error applying to job:', error);
     }
 }
+   
+const navbarToggle = document.getElementById('navbarToggle');
+    const navbarLinks = document.querySelector('.navbar-links');
+
+    navbarToggle.addEventListener('click', () => {
+        navbarLinks.classList.toggle('active');
+    });
+
 
 </script>
 
