@@ -87,6 +87,7 @@ app.get('/crc/dashboard', isAuthenticated, async (req, res) => {
 app.get('/register', (req, res) => {
     res.render('register');
 });
+
 app.post('/register', async (req, res) => {
     const { username, password, email, role, branch, rollNumber } = req.body;
 
@@ -98,34 +99,35 @@ app.post('/register', async (req, res) => {
         }
 
         // Create a new user object
-        const newUser = new User({
+        let newUser = new User({
             username,
             password,
             email,
-            branch, // Include branch
             role,
+            branch, // Include branch for student role
         });
 
         // Add role-specific fields
         if (role === "student") {
-            if (rollNumber) {
-                newUser.rollNumber = rollNumber;
-            }
-            if (branch) {
-                newUser.branch = branch; // Add branch to the student user
-            }
+            newUser.rollNumber = rollNumber;  // Assign roll number for student
+            newUser.branch = branch;  // Assign branch for student
+        } else if (role === 'parent') {
+            // For parent, we just store the roll number and branch of the student
+            newUser.rollNumber = rollNumber;  // Student's roll number
+            newUser.branch = branch;  // Student's branch
         }
-        
 
-        await newUser.save(); // Save the user to the database
+        await newUser.save();  // Save the user to the database
         console.log('Registered User:', newUser);
 
-        res.redirect('/'); // Redirect after successful registration
+        res.redirect('/');  // Redirect after successful registration
     } catch (err) {
         console.log('Error during registration:', err);
         res.render('register', { error: 'An error occurred during registration.' });
     }
 });
+
+
 function isAuthenticated(req, res, next) {
     if (req.session.userId) {
         return next(); 
@@ -198,7 +200,7 @@ app.get('/logout', (req, res) => {
         }
 
         // Redirect to the dashboard
-        res.redirect('/crc/dashboard');
+        res.redirect('/');
     });
 });
 app.post('/apply/:jobId', async (req, res) => {
@@ -477,7 +479,7 @@ app.get('/teacher/dashboard', isTeacherAuthenticated, async (req, res) => {
             "Mechanical Engineering",
             "Civil Engineering",
             "Electrical Engineering"
-        ]; // Update your branches list here
+        ]; 
 
         res.render('teacher', { students, branches, selectedBranch: branch });
     } catch (error) {
@@ -486,6 +488,79 @@ app.get('/teacher/dashboard', isTeacherAuthenticated, async (req, res) => {
     }
 });
 
+app.get('/analytics', async (req, res) => {
+    try {
+      const totalStudents = await User.countDocuments({ role: 'student' });
+      const studentsApplied = await User.countDocuments({ role: 'student', appliedJobs: { $exists: true, $not: { $size: 0 } } });
+  
+      const interviewedStudents = await Job.aggregate([
+        { $unwind: "$interviewed" },
+        { $group: { _id: "$interviewed" } },
+        { $count: "totalInterviewed" }
+      ]);
+      const studentsInterviewed = interviewedStudents[0]?.totalInterviewed || 0;
+  
+      const placedStudents = await Job.aggregate([
+        { $unwind: "$placed" },
+        { $group: { _id: "$placed" } },
+        { $count: "totalPlaced" }
+      ]);
+      const studentsPlaced = placedStudents[0]?.totalPlaced || 0;
+  
+      res.render('analytics', {
+        totalStudents,
+        studentsApplied,
+        studentsInterviewed,
+        studentsPlaced,
+      });
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+  app.get('/jobs', async (req, res) => {
+    try {
+      const jobs = await Job.find(); // Assuming Job is your model for jobs
+      res.render('jobs', { jobs }); // This sends the 'jobs' data to the jobs.ejs file
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Something went wrong!');
+    }
+  });
+  app.get('/parent/dashboard', async (req, res) => {
+    try {
+      const { rollNumber, branch } = req.query; // Get roll number and branch from the query
+      
+      // Check if the roll number and branch are provided
+      if (!rollNumber || !branch) {
+        return res.status(400).send('Missing roll number or branch');
+      }
+  
+      // Find the parent using the roll number and branch, and ensure the role is 'parent'
+      const parent = await User.findOne({ rollNumber, branch, role: 'parent' });
+      if (!parent) {
+        return res.status(404).send('Parent not found or incorrect roll number/branch');
+      }
+  
+      // Find the corresponding student based on roll number and branch, and ensure the role is 'student'
+      const student = await User.findOne({ rollNumber, branch, role: 'student' })
+        .populate('appliedJobs');  // Populate the applied jobs to display them
+  
+      if (!student) {
+        return res.status(404).send('Student not found');
+      }
+  
+      // Render the dashboard with the student's application data
+      res.render('parent', {
+        parentName: parent.username,  // Assuming 'username' for parent name
+        studentName: student.username,  // Assuming 'username' for student name
+        applications: student.appliedJobs
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Something went wrong');
+    }
+  });
+  
 app.listen(8000, () => {
     console.log('Server started on port 8000');
 });      

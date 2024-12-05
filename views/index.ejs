@@ -154,11 +154,52 @@
     .rgst:hover{
       background-color: #007bff;
     }
-    
+    .navbar {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 15px 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+
+    .navbar h2 {
+      color: #fff;
+      font-size: 1.8rem;
+      margin: 0;
+    }
+
+    .navbar button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: auto; /* Auto width instead of full width */
+    }
+
+
+    .navbar button:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 
 <body>
+  <div class="navbar">
+    <h2>Smart Placement Hub</h2>
+    <button onclick="window.location.href='/analytics'">View Analytics</button>
+  </div>
   <div class="container">
     <h1>Welcome to Smart Placement Hub</h1>
     <img src="https://i.pinimg.com/236x/3b/94/6e/3b946eb954f03a7eb2bbe6bfa02a22be.jpg" alt="Placement Support Logo" class="login-image" style="width: 80px; height: auto; margin-bottom: 20px;">
@@ -168,7 +209,7 @@
         <option value="" disabled selected>Select your role</option>
         <option value="student">Student</option>
         <option value="teacher">Teacher</option>
-        <option value="parents">Parents</option>
+        <option value="parent">Parent</option>
         <option value="crc">CRC</option>
       </select>
       <input type="text" name="username" placeholder="Username" required>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .chart-container {
+      width: 80%;
+      margin: 0 auto;
+    }
+    .data-table {
+      margin: 20px auto;
+      width: 80%;
+      border-collapse: collapse;
+    }
+    .data-table th, .data-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    .data-table th {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Analytics Dashboard</h1>
+
+  <!-- Chart Section -->
+  <div class="chart-container">
+    <canvas id="analyticsChart"></canvas>
+  </div>
+
+  <!-- Table Section -->
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Total Students</td>
+        <td><%= totalStudents %></td>
+      </tr>
+      <tr>
+        <td>Students Applied</td>
+        <td><%= studentsApplied %></td>
+      </tr>
+      <tr>
+        <td>Students Interviewed</td>
+        <td><%= studentsInterviewed %></td>
+      </tr>
+      <tr>
+        <td>Students Placed</td>
+        <td><%= studentsPlaced %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    // Analytics Data from Server
+    const analyticsData = {
+      totalStudents: <%= totalStudents %>,
+      studentsApplied: <%= studentsApplied %>,
+      studentsInterviewed: <%= studentsInterviewed %>,
+      studentsPlaced: <%= studentsPlaced %>
+    };
+
+    // Render Chart
+    const ctx = document.getElementById('analyticsChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Total Students', 'Students Applied', 'Students Interviewed', 'Students Placed'],
+        datasets: [{
+          label: 'Count',
+          data: [
+            analyticsData.totalStudents,
+            analyticsData.studentsApplied,
+            analyticsData.studentsInterviewed,
+            analyticsData.studentsPlaced
+          ],
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+          borderWidth: 1,
+        }],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

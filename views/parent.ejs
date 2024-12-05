@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent Dashboard</title>
+  <link rel="stylesheet" href="/styles.css"> <!-- Link to your styles -->
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/home">Home</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="dashboard">
+      <h1>Welcome, <%= parentName %></h1>
+      <p>Student: <%= studentName %></p>
+
+      <h2>Applications</h2>
+      <% if (applications && applications.length > 0) { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Position</th>
+              <th>Applied On</th>
+              <th>Interview Status</th>
+              <th>Shortlisted</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% applications.forEach(function(job) { %>
+              <tr>
+                <td><%= job.company %></td>
+                <td><%= job.position %></td>
+                <td><%= job.appliedOn.toISOString().split('T')[0] %></td>
+                <td><%= job.interviewStatus %></td>
+                <td><%= job.shortlisted ? 'Yes' : 'No' %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <p>No applications found for this student.</p>
+      <% } %>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Smart Placement System</p>
+  </footer>
+</body>
+</html>
