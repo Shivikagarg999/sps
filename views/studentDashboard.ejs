@@ -13,7 +13,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-
+    
         body {
             font-family: Arial, sans-serif;
             background-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0');
@@ -23,73 +23,59 @@
             background-repeat: no-repeat;
             min-height: 100vh;
             width: 100%;
+            display: flex;
+            transition: all 0.3s ease;
         }
-
+    
         .container {
             max-width: 900px;
-            margin: auto;
+            margin-left: 250px;
             background: rgba(0, 0, 0, 0.7);
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            flex-grow: 1;
+            transition: margin-left 0.3s ease;
         }
-
+    
         h2 {
             text-align: center;
             margin-bottom: 20px;
         }
-
+    
         .greeting {
             text-align: center;
             font-size: 1.5rem;
             margin-bottom: 30px;
-            color: #ffcc00; /* Yellow for greeting */
+            color: #ff6600;
         }
-
-        .job-container {
-            background: white;
-            color: black;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .job-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
+    
         .job-card {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-    margin: 9px;
-}
-
-.job-card:hover {
-    transform: translateY(-5px);
-}
-
-.job-title {
-    margin: 0 0 10px;
-    font-size: 20px;
-    color: #2a7ae2;
-}
-
-.job-description {
-    font-size: 16px;
-    margin: 0 0 10px;
-    color: #555;
-}
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin: 9px;
+        }
+    
+        .job-card:hover {
+            transform: translateY(-5px);
+        }
+    
+        .job-title {
+            margin: 0 0 10px;
+            font-size: 20px;
+            color: #ff6600;
+        }
+        h3{
+            color: #e65c00;
+        }
         .apply-button {
             display: inline-block;
             padding: 8px 15px;
-            background-color: #007bff;
+            background-color: #ff6600;
             color: white;
             text-decoration: none;
             border-radius: 5px;
@@ -97,16 +83,11 @@
             font-weight: bold;
             transition: background-color 0.3s ease;
         }
-
+    
         .apply-button:hover {
-            background-color: #0056b3;
+            background-color: #e65c00;
         }
-
-        .applied {
-            font-weight: bold;
-            color: green;
-        }
-
+    
         .logout-button {
             display: block;
             margin: 20px auto;
@@ -117,284 +98,131 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
             width: 140px;
             font-weight: bold;
+            transition: background-color 0.3s ease;
         }
-        .job-applicants{
-            color: black;
-            font-weight: bold;
-            margin: 5px;
-        }
+    
         .logout-button:hover {
             background-color: #c82333;
         }
-
-        @media (max-width: 600px) {
-            h2 {
-                font-size: 1.8rem;
-            }
-
-            .job-title {
-                font-size: 1.3rem;
-            }
-
-            .apply-button {
-                font-size: 0.9rem;
-            }
+    
+        /* Left Sidebar Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: width 0.3s ease;
         }
-        .job-company{
+    
+        .navbar-logo a {
+            text-decoration: none;
+            color: #ff6600;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    
+        .navbar-links {
+            list-style: none;
+            margin-top: 50px;
+        }
+    
+        .navbar-links li {
+            margin-bottom: 20px;
+        }
+       
+        .navbar-links li a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+    
+        .navbar-links li a:hover {
+            color: #ff6600;
+        }
+    
+        .navbar-footer {
+            margin-top: auto;
+            text-align: center;
+            color: white;
+        }
+    
+        /* Hamburger Icon for Mobile */
+        .hamburger {
+            display: none;
+            font-size: 30px;
+            cursor: pointer;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+        }
+    
+        /* Toggle Sidebar on Mobile */
+        .sidebar-hidden {
+            width: 0 !important;
+            visibility: hidden;
+        }
+    
+        .container {
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+        }
+        p{
             color: black;
         }
-        /* Style for the Applied Jobs List */
-.applied-jobs-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 30px;
-}
-
-/* Style for each Job Card */
-.applied-job-card {
-    background-color: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    width: 250px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
-}
-
-/* Job Title and Company */
-.job-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.job-company {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 10px;
-}
-/* Style for the container of the job cards */
-.applied-jobs-list {
-    display: block; /* By default, block-level elements stack vertically */
-}
-
-/* Style for each job card */
-.applied-job-card {
-    width: 600px; /* Each card will take up the full width of its container */
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-    box-sizing: border-box; /* Ensures padding is included in the width calculation */
-    margin-bottom: 20px; /* Adds space between cards */
-}
-
-/* Style for the job title */
-.job-title {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-/* Style for the company name */
-.job-company {
-    font-size: 16px;
-    color: #555;
-}
-
-/* Style for the job description */
-.job-description {
-    font-size: 14px;
-    margin: 10px 0;
-}
-
-.job-salary{
-    color: black;
-}
-/* No applied jobs message */
-.no-applied-jobs {
-    font-size: 16px;
-    color: #888;
-    margin-top: 20px;
-}
-/* Container for the applied jobs */
-.appjobs {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-    color: #333;
-}
-
-.appjobs h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-/* Applied Jobs List */
-.applied-jobs-list {
-    display: flex;
-    flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
-    gap: 20px;
-    justify-content: center; /* Center the cards */
-}
-
-/* Applied Job Card */
-.applied-job-card {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    width: 300px; /* Fixed width for consistency */
-    text-align: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.applied-job-card:hover {
-    transform: translateY(-5px); /* Slight lift on hover */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* Job Title */
-.applied-job-card h3 {
-    font-size: 18px;
-    margin: 10px 0;
-    color: #007bff;
-}
-
-/* Job Description */
-.applied-job-card p {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.5;
-}
-
-/* Media Queries for Responsiveness */
-@media (max-width: 768px) {
-    .applied-job-card {
-        width: 100%; /* Full width on smaller screens */
-    }
-
-    .appjobs h2 {
-        font-size: 20px; /* Smaller font size for heading */
-    }
-
-    .applied-job-card h3 {
-        font-size: 16px; /* Adjust title size */
-    }
-
-    .applied-job-card p {
-        font-size: 13px; /* Smaller font size for description */
-    }
-}
-
-@media (max-width: 480px) {
-    .appjobs {
-        padding: 10px; /* Reduce padding on smaller screens */
-    }
-
-    .applied-job-card {
-        padding: 10px; /* Compact padding */
-    }
-
-    .applied-job-card h3 {
-        font-size: 14px; /* Further adjust title size */
-    }
-
-    .applied-job-card p {
-        font-size: 12px; /* Smaller font for description */
-    }
-}
-h3{
-    color: black;
-}
-p{
-    color: black;
-}
-/* Navbar Styling */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 30px 20px;
-    margin-bottom: 12px;
-    border-bottom: 2px solid #ffcc00;
-}
-
-.navbar-logo a {
-    text-decoration: none;
-    color: #ffcc00;
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.navbar-links {
-    display: flex;
-    gap: 20px;
-    list-style: none;
-}
-
-.navbar-links li a {
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-.navbar-links li a:hover {
-    color: #ffcc00;
-}
-
-/* Mobile Menu Toggle */
-.navbar-toggle {
-    display: none;
-    cursor: pointer;
-}
-
-.navbar-toggle i {
-    color: white;
-    font-size: 1.5rem;
-}
-
-
-/* Responsive Navbar */
-@media (max-width: 768px) {
-    .navbar-links {
-        display: none;
-        flex-direction: column;
-        background: rgba(0, 0, 0, 0.9);
-        position: absolute;
-        top: 50px;
-        right: 0;
-        width: 100%;
-        padding: 10px 0;
-    }
-
-    .navbar-links.active {
-        display: flex;
-    }
-
-    .navbar-toggle {
-        display: block;
-    }
-}
-
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                left: 0;
+                top: 0;
+                display: none;
+            }
+    
+            .navbar.open {
+                display: block;
+            }
+    
+            .container {
+                margin-left: 0;
+                margin-top: 120px;
+            }
+    
+            .hamburger {
+                display: block;
+            }
+    
+            .navbar-links {
+                display: none;
+            }
+    
+            .navbar.open .navbar-links {
+                display: block;
+                text-align: center;
+            }
+    
+            .navbar-links li {
+                margin-bottom: 15px;
+                text-align: center;
+            }
+        }
     </style>
-</head>
-
-<body>
-    <!-- <a href="/logout" class="logout-button">Logout</a>
-    <a href="/uploadget" class="logout-button">Upload Resume</a> -->
-    <header>
+    
+    <body>
+        <div class="hamburger" id="navbarToggle" onclick="toggleSidebar()">&#9776;</div>
         <nav class="navbar">
             <div class="navbar-logo">
                 <a href="/">My Dashboard</a>
@@ -402,77 +230,77 @@ p{
             <ul class="navbar-links">
                 <li><a href="/profile">My Profile</a></li>
                 <li><a href="/appliedjobs">Applied Jobs</a></li>
+                <li><a href="/interviewed-jobs">Interviewed</a></li>
                 <li><a href="/logout">Logout</a></li>
             </ul>
-            <div class="navbar-toggle" id="navbarToggle">
-                <i class="fas fa-bars"></i>
+            <div class="navbar-footer">
+                <p>&copy; 2024 Smart Placement System</p>
             </div>
         </nav>
-    </header>
-    <div class="container">
-        <div class="greeting">
-            <h2>Hello, <%= user.username %>! Welcome to your dashboard.</h2>
+    
+        <div class="container">
+            <div class="greeting">
+                <h2>Hello, <%= user.username %>! Welcome to your dashboard.</h2>
+            </div>
+            <h2>Available Job Postings</h2>
+            <div class="job-list">
+                <% jobs.forEach(job => { %>
+                    <div class="job-card">
+                        <h3 class="job-title"><%= job.title %></h3>
+                        <h3 class="job-company"><%= job.company %></h3>
+                        <p class="job-description"><%= job.description %></p>
+                        <p>Salary range:</p><p class="job-salary"><%= job.salary %></p>
+                        
+                        <% if (appliedJobs.includes(job._id.toString())) { %>
+                            <span class="applied">You have applied for this job.</span>
+                        <% } else { %>
+                            <button 
+                                onclick="applyToJob('<%= job._id %>', '<%= user._id %>')" 
+                                class="apply-button">
+                                Apply
+                            </button>
+                        <% } %>
+                        
+                        <div class="job-applicants"><%= job.applicants.length %> applicants</div>
+                    </div>
+                <% }) %>
+            </div>
         </div>
-        <h2>Available Job Postings</h2>
-        <div class="job-list">
-            <% jobs.forEach(job => { %>
-                <div class="job-card">
-                    <h3 class="job-title"><%= job.title %></h3>
-                    <h3 class="job-company"><%= job.company %></h3>
-                    <p class="job-description"><%= job.description %></p>
-                    <p>Salary range:</p><p class="job-salary"><%= job.salary %></p>
-                    
-                    <% if (appliedJobs.includes(job._id.toString())) { %>
-                        <span class="applied">You have applied for this job.</span>
-                    <% } else { %>
-                        <button 
-                            onclick="applyToJob('<%= job._id %>', '<%= user._id %>')" 
-                            class="apply-button">
-                            Apply
-                        </button>
-                    <% } %>
-                    
-                    <div class="job-applicants"><%= job.applicants.length %> applicants</div>
-                </div>
-            <% }) %>
-        </div>
-        
-    </div>
-</body>
-
-<script>
-  async function applyToJob(jobId, userId) {
-    try {
-        const response = await fetch(`/apply/${jobId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            alert(data.message); 
-            document.querySelector(`button[onclick="applyToJob('${jobId}', '${userId}')"]`).disabled = true;
-            document.querySelector(`button[onclick="applyToJob('${jobId}', '${userId}')"]`).textContent = 'Applied';
-        } else {
-            alert(data.message);
+    
+    </body>
+    
+    <script>
+        async function applyToJob(jobId, userId) {
+            try {
+                const response = await fetch(`/apply/${jobId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId }),
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    alert(data.message); 
+                    document.querySelector(`button[onclick="applyToJob('${jobId}', '${userId}')"]`).disabled = true;
+                    document.querySelector(`button[onclick="applyToJob('${jobId}', '${userId}')"]`).textContent = 'Applied';
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Error applying to job:', error);
+            }
         }
-    } catch (error) {
-        console.error('Error applying to job:', error);
-    }
-}
-   
-const navbarToggle = document.getElementById('navbarToggle');
-    const navbarLinks = document.querySelector('.navbar-links');
-
-    navbarToggle.addEventListener('click', () => {
-        navbarLinks.classList.toggle('active');
-    });
-
-
-</script>
+    
+        function toggleSidebar() {
+            const navbar = document.querySelector('.navbar');
+            const container = document.querySelector('.container');
+            navbar.classList.toggle('open'); // Toggle the sidebar visibility
+            container.classList.toggle('sidebar-open'); // Shift the content to the right
+        }
+    </script>
+    
 
 </html>

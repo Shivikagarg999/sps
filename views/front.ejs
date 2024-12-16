@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Placement Analytics - Smart Placement System</title>
+    <title>Smart Placement Hub- ABESIT</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
     <style>
-        /* General styling */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -19,24 +22,69 @@
             height: 100vh;
             overflow: hidden;
         }
-
         h1, h2 {
             text-align: center;
             color: rgba(255, 165, 0, 0.7);
             margin: 0;
             padding: 10px;
         }
-
         h1 {
             font-size: 36px;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-
         h2 {
             font-size: 24px;
             margin-top: 15px;
         }
+        .heads {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .heads img{
+            height: 100px;
+        }  
+        .heads h1 {
+    color: white;
+    font-size: 13vh;
+    font-family: "Rye", serif;
+    font-weight: 600;
+    font-style: normal;
+    text-shadow: 3px 3px 10px rgba(255, 165, 0, 0.7), 3px 3px 10px rgba(0, 0, 255, 0.7); /* Orange and Blue shadow */
+}
+
+        .buttons{
+            display: flex;
+            align-self: center;
+            justify-items: center;
+            align-items: center;
+        }
+        .buttons a {
+    text-decoration: none;
+    margin: 4px;
+    padding: 12px 20px;  /* Adjusted padding for better spacing */
+    background: linear-gradient(145deg, #ff6f61, #ff3d2e);  /* Gradient background */
+    color: white;
+    font-weight: 500;
+    font-size: 16px;  /* Increased font size */
+    border: 1px solid #ff3d2e;  /* Border color matching the button */
+    border-radius: 50px;  /* Rounded button corners */
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);  /* Subtle shadow for depth */
+    transition: all 0.3s ease;  /* Smooth transition effect */
+}
+
+.buttons a:hover {
+    background: linear-gradient(145deg, #ff3d2e, #ff6f61);  /* Reversed gradient on hover */
+    transform: translateY(-4px);  /* Slightly raise the button on hover */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);  /* Deeper shadow on hover */
+    border-color: #ff5722;  /* Change border color on hover */
+}
 
         .container {
             display: grid;
@@ -44,6 +92,8 @@
             grid-gap: 20px;
             max-width: 1200px;
             padding: 20px;
+            opacity: .3;
+            z-index: -22;
             height: 100%;
             overflow: hidden;
             box-sizing: border-box;
@@ -86,7 +136,9 @@
                 grid-template-columns: 1fr 1fr;
                 padding: 10px;
             }
-
+            .heads h1{
+                font-size: 7vh;
+            }
             .chart-container {
                 padding: 10px;
             }
@@ -94,6 +146,16 @@
     </style>
 </head>
 <body>
+    <div class="heads">
+        <img src="https://i.imgur.com/NfTte8r.jpeg">
+        <h1>Smart Placement</h1>
+        <h1>Hub</h1>
+        <div class="buttons">
+            <a href="/analytics">Dashboard</a>
+            <a href="/index"> Get Started </a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOZlpQsW81TlRPPW5bQi0S2fQRSBKv6XrxQqLR7YTadrVNJQ/viewform">Write a review</a>
+        </div>
+    </div>
     <div class="container">
         <!-- Main Heading for the page -->
         <h1>Smart Placement System</h1>

@@ -1,0 +1,128 @@
+<!-- views/interviewedJobs.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interviewed Jobs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Global Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom right, #2C3E50, #1A252F);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 20px;
+            color: #ff6600;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        /* Back Button */
+        .back-button {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            background: #ff6600;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #e65c00;
+        }
+
+        /* Container */
+        .container {
+            flex: 1; /* Ensures it takes remaining space */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Job Card */
+        .job-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            transition: transform 0.3s ease;
+        }
+
+        .job-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .job-card h3 {
+            color: #ff6600;
+            margin-bottom: 10px;
+        }
+
+        .job-card p {
+            margin: 5px 0;
+        }
+
+        /* No Jobs Message */
+        .no-jobs {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #ff6600;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="javascript:history.back()" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <h1>Interviewed Jobs</h1>
+    </header>
+
+    <div class="container">
+        <% if (jobs.length > 0) { %>
+            <% jobs.forEach(job => { %>
+                <div class="job-card">
+                    <h3><%= job.title %></h3>
+                    <p><strong>Company:</strong> <%= job.company %></p>
+                    <p><strong>Description:</strong> <%= job.description %></p>
+                    <% if (job.salary) { %>
+                        <p><strong>Salary:</strong> <%= job.salary %></p>
+                    <% } %>
+                    <p><strong>Interview Date:</strong> <%= job.createdAt.toDateString() %></p>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="no-jobs">
+                <p>No jobs where you were interviewed yet.</p>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>

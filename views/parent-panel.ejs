@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Panel - Smart Placement Hub</title>
+    <style>
+       * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2C3E50; /* Dark background */
+            color: #ecf0f1; /* Light text color for contrast */
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #34495E; /* Slightly lighter dark for container */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #e67e22; /* Orange for main heading */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2, h3 {
+            font-size: 1.5rem;
+            color: #f39c12; /* Lighter orange for subheadings */
+            margin-bottom: 10px;
+        }
+
+        .student-info p {
+            font-size: 1.2rem;
+            margin: 5px 0;
+        }
+
+        .jobs-list {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #7f8c8d;
+        }
+
+        table th {
+            background-color: #16a085; /* Teal background for headers */
+            color: #fff;
+        }
+
+        table td {
+            background-color: #1abc9c; /* Lighter teal for table cells */
+            color: #fff;
+        }
+
+        table tr:nth-child(even) td {
+            background-color: #16a085; /* Slightly darker for even rows */
+        }
+
+        .back-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-button a {
+            color: #fff;
+            background-color: #e67e22; /* Orange background for button */
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .back-button a:hover {
+            background-color: #d35400; /* Darker orange on hover */
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <% if (parent) { %>
+            <h1>Welcome, <%= parent.username %></h1>
+        <% } else { %>
+            <h1>User not found or not authenticated</h1>
+        <% } %>
+
+        <h2>Your Child's Information</h2>
+
+        <!-- Error message -->
+        <% if (error) { %>
+            <div class="error">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <!-- Student Info -->
+        <% if (student) { %>
+            <div class="student-info">
+                <p><strong>Roll Number:</strong> <%= student.rollNumber %></p>
+                <p><strong>Branch:</strong> <%= student.branch %></p>
+                <p><strong>Email:</strong> <%= student.email %></p>
+            </div>
+        <% } else { %>
+            <p>No student data found or the student does not exist.</p>
+        <% } %>
+
+        <!-- Applied Jobs -->
+        <h3>Applied Jobs</h3>
+        <div class="jobs-list">
+            <% if (jobs.length > 0) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% jobs.forEach(job => { %>
+                            <tr>
+                                <td><%= job.title %></td>
+                                <td><%= job.company %></td>
+                                <td>
+                                    <% if (job.applicants.includes(student._id)) { %>
+                                        Applied
+                                    <% } %>
+                                    <% if (job.shortlisted.includes(student._id)) { %>
+                                        Shortlisted
+                                    <% } %>
+                                    <% if (job.interviewed.includes(student._id)) { %>
+                                        Interviewed
+                                    <% } %>
+                                    <% if (job.placed.includes(student._id)) { %>
+                                        Placed
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No job applications found.</p>
+            <% } %>
+        </div>
+
+        <!-- Back Button -->
+        <div class="back-button">
+            <a href="/">Back</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOZlpQsW81TlRPPW5bQi0S2fQRSBKv6XrxQqLR7YTadrVNJQ/viewform">Write review</a>
+        </div>
+    </div>
+</body>
+
+</html>

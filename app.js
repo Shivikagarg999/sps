@@ -20,7 +20,44 @@ app.use(session({
       maxAge: 1000 * 60 * 60 * 24, // 1 day cookie expiration
     }
   }));
-  app.use('/uploads', express.static(path.join('/data', 'uploads')));
+  
+app.get('/', async (req, res) => {
+    try {
+      // Get total placed students per branch
+      const placedStudents = await User.aggregate([
+        { $match: { role: 'student' } },
+        { $group: { _id: '$branch', total: { $sum: { $cond: [{ $eq: ['$role', 'student'] }, 1, 0] } } } }
+      ]);
+  
+      // Get total students per company
+      const companies = await Job.aggregate([
+        { $unwind: '$placed' },
+        { $group: { _id: '$company', total: { $sum: 1 } } }
+      ]);
+  
+      // Get placement statistics over time (e.g., per month)
+      const statsOverTime = await Job.aggregate([
+        { $match: { placed: { $exists: true } } },
+        { $unwind: '$placed' },
+        { $group: { _id: { $month: '$createdAt' }, totalPlaced: { $sum: 1 } } },
+        { $sort: { '_id': 1 } }
+      ]);
+  
+      // Render the analytics page with the data
+      res.render('front', {
+        placedStudents,
+        companies,
+        statsOverTime
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Error fetching analytics data');
+    }
+  });
+
+
+
+app.use('/uploads', express.static(path.join('/data', 'uploads')));
 const connectDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI, {
@@ -33,12 +70,45 @@ const connectDB = async () => {
         process.exit(1); 
     }
 };
+async function getBranchAnalytics() {
+    const branches = await User.distinct('branch'); // Get all unique branches
+    const analytics = {};
+  
+    for (const branch of branches) {
+      const applicants = await User.find({ branch, role: 'student' }).populate('appliedJobs');
+      
+      analytics[branch] = {
+        totalStudents: applicants.length,
+        studentsApplied: applicants.filter(user => user.appliedJobs.length > 0).length,
+        studentsShortlisted: 0,
+        studentsInterviewed: 0,
+        studentsPlaced: 0,
+      };
+  
+      // Count the number of students in each status
+      for (const applicant of applicants) {
+        const jobs = await Job.find({ applicants: applicant._id });
+        for (const job of jobs) {
+          if (job.shortlisted.includes(applicant._id)) {
+            analytics[branch].studentsShortlisted++;
+          }
+          if (job.interviewed.includes(applicant._id)) {
+            analytics[branch].studentsInterviewed++;
+          }
+          if (job.placed.includes(applicant._id)) {
+            analytics[branch].studentsPlaced++;
+          }
+        }
+      }
+    }
+  
+    return analytics;
+  }
+
+
 connectDB();
 app.set('view engine', 'ejs');
 app.set('views', './views');
-app.get('/', (req, res) => {                          
-    res.render('index');
-});
 app.post('/login', async (req, res) => {
     const { role, username, email, password } = req.body;
             
@@ -66,15 +136,6 @@ app.post('/login', async (req, res) => {
       return res.status(500).send('Internal server errorz.');
     }
 });      
-// app.get('/teacher/dashboard', async (req, res) => {
-//     try {
-//         const jobs = await Job.find(); // Fetch jobs from the database
-//         res.render('teacherDashboard', { jobs }); // Pass jobs to the template
-//     } catch (error) {
-//         console.error("Error fetching jobs:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
 app.get('/crc/dashboard', isAuthenticated, async (req, res) => {
   try {
       const jobs = await Job.find(); // Fetch all job postings
@@ -87,9 +148,8 @@ app.get('/crc/dashboard', isAuthenticated, async (req, res) => {
 app.get('/register', (req, res) => {
     res.render('register');
 });
-
 app.post('/register', async (req, res) => {
-    const { username, password, email, role, branch, rollNumber } = req.body;
+    const { username, password, email, role, branch, rollNumber, studentRollNumber } = req.body;
 
     try {
         // Check if the user already exists
@@ -112,9 +172,12 @@ app.post('/register', async (req, res) => {
             newUser.rollNumber = rollNumber;  // Assign roll number for student
             newUser.branch = branch;  // Assign branch for student
         } else if (role === 'parent') {
-            // For parent, we just store the roll number and branch of the student
-            newUser.rollNumber = rollNumber;  // Student's roll number
-            newUser.branch = branch;  // Student's branch
+            if (!studentRollNumber) {
+                return res.render('register', { error: 'Please provide your child\'s roll number.' });
+            }
+            // For parent, store the student's roll number
+            newUser.rollNumber = studentRollNumber;  // Parent stores child's roll number
+            newUser.branch = branch;  // Optional, store branch if needed for the parent
         }
 
         await newUser.save();  // Save the user to the database
@@ -126,7 +189,6 @@ app.post('/register', async (req, res) => {
         res.render('register', { error: 'An error occurred during registration.' });
     }
 });
-
 
 function isAuthenticated(req, res, next) {
     if (req.session.userId) {
@@ -365,26 +427,33 @@ app.get('/profile', async (req, res) => {
         console.error('Error fetching student dashboard data:', error);
         res.status(500).send('Internal server error.');
     }
-
-  
 });
+
 app.get('/appliedjobs', async (req, res) => {
     try {
-        // Assuming the user is logged in and their ID is in the session
-        const userId = req.session.userId; // Modify as per your session setup
-        
-        // Fetch the user and their applied jobs from the database
+        // Check if userId exists in session
+        const userId = req.session.userId;
+        if (!userId) {
+            return res.status(401).send('User not logged in');
+        }
+
+        // Fetch the user and their applied jobs
         const user = await User.findById(userId).populate('appliedJobs');
-        
-        // Render the appliedjobs.ejs page, passing the applied jobs data
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        // Render the page, even if appliedJobs is empty
         res.render('appliedjobs', {
-            appliedJobs: user.appliedJobs, // Assuming appliedJobs is an array of job objects
+            appliedJobs: user.appliedJobs || [], // Default to an empty array if undefined
         });
     } catch (error) {
         console.error('Error fetching applied jobs:', error);
         res.status(500).send('Server error');
     }
 });
+
 app.post('/crc/interview/:jobId/:candidateId', async (req, res) => {
     try {
         const job = await Job.findById(req.params.jobId).populate('shortlisted interviewed placed');
@@ -431,7 +500,6 @@ app.post('/crc/place/:jobId/:candidateId', async (req, res) => {
         // Remove candidate from the interviewed array
         job.interviewed = job.interviewed.filter(candidate => candidate._id.toString() !== candidateId);
 
-        // Save the updated job document
         await job.save();
 
         // Redirect to the applicants page for the job
@@ -473,12 +541,12 @@ app.get('/teacher/dashboard', isTeacherAuthenticated, async (req, res) => {
         }
 
         const branches = [
-            "Computer Science",
-            "Information Technology",
-            "Electronics and Communication",
-            "Mechanical Engineering",
-            "Civil Engineering",
-            "Electrical Engineering"
+            "CSE",
+            "CSE DS",
+            "CDE AI",
+            "CSE IOT",
+            "IT",
+            "MCA"
         ]; 
 
         res.render('teacher', { students, branches, selectedBranch: branch });
@@ -487,37 +555,7 @@ app.get('/teacher/dashboard', isTeacherAuthenticated, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-app.get('/analytics', async (req, res) => {
-    try {
-      const totalStudents = await User.countDocuments({ role: 'student' });
-      const studentsApplied = await User.countDocuments({ role: 'student', appliedJobs: { $exists: true, $not: { $size: 0 } } });
-  
-      const interviewedStudents = await Job.aggregate([
-        { $unwind: "$interviewed" },
-        { $group: { _id: "$interviewed" } },
-        { $count: "totalInterviewed" }
-      ]);
-      const studentsInterviewed = interviewedStudents[0]?.totalInterviewed || 0;
-  
-      const placedStudents = await Job.aggregate([
-        { $unwind: "$placed" },
-        { $group: { _id: "$placed" } },
-        { $count: "totalPlaced" }
-      ]);
-      const studentsPlaced = placedStudents[0]?.totalPlaced || 0;
-  
-      res.render('analytics', {
-        totalStudents,
-        studentsApplied,
-        studentsInterviewed,
-        studentsPlaced,
-      });
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
-  app.get('/jobs', async (req, res) => {
+app.get('/jobs', async (req, res) => {
     try {
       const jobs = await Job.find(); // Assuming Job is your model for jobs
       res.render('jobs', { jobs }); // This sends the 'jobs' data to the jobs.ejs file
@@ -526,41 +564,118 @@ app.get('/analytics', async (req, res) => {
       res.status(500).send('Something went wrong!');
     }
   });
-  app.get('/parent/dashboard', async (req, res) => {
+ 
+app.get('/analytics', async (req, res) => {
     try {
-      const { rollNumber, branch } = req.query; // Get roll number and branch from the query
-      
-      // Check if the roll number and branch are provided
-      if (!rollNumber || !branch) {
-        return res.status(400).send('Missing roll number or branch');
-      }
+      // Get total placed students per branch
+      const placedStudents = await User.aggregate([
+        { $match: { role: 'student' } },
+        { $group: { _id: '$branch', total: { $sum: { $cond: [{ $eq: ['$role', 'student'] }, 1, 0] } } } }
+      ]);
   
-      // Find the parent using the roll number and branch, and ensure the role is 'parent'
-      const parent = await User.findOne({ rollNumber, branch, role: 'parent' });
-      if (!parent) {
-        return res.status(404).send('Parent not found or incorrect roll number/branch');
-      }
+      // Get total students per company
+      const companies = await Job.aggregate([
+        { $unwind: '$placed' },
+        { $group: { _id: '$company', total: { $sum: 1 } } }
+      ]);
   
-      // Find the corresponding student based on roll number and branch, and ensure the role is 'student'
-      const student = await User.findOne({ rollNumber, branch, role: 'student' })
-        .populate('appliedJobs');  // Populate the applied jobs to display them
+      // Get placement statistics over time (e.g., per month)
+      const statsOverTime = await Job.aggregate([
+        { $match: { placed: { $exists: true } } },
+        { $unwind: '$placed' },
+        { $group: { _id: { $month: '$createdAt' }, totalPlaced: { $sum: 1 } } },
+        { $sort: { '_id': 1 } }
+      ]);
   
-      if (!student) {
-        return res.status(404).send('Student not found');
-      }
-  
-      // Render the dashboard with the student's application data
-      res.render('parent', {
-        parentName: parent.username,  // Assuming 'username' for parent name
-        studentName: student.username,  // Assuming 'username' for student name
-        applications: student.appliedJobs
+      // Render the analytics page with the data
+      res.render('analytics', {
+        placedStudents,
+        companies,
+        statsOverTime
       });
     } catch (error) {
       console.error(error);
-      res.status(500).send('Something went wrong');
+      res.status(500).send('Error fetching analytics data');
     }
   });
-  
+app.get("/index", (req,res)=>{
+    res.render('index')
+})
+
+app.get('/interviewed-jobs', async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        
+        
+        const jobs = await Job.find({ interviewed: userId });
+
+        res.render('interviewedJobs', { jobs }); 
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error.');
+    }
+});
+// Parent Panel Route (GET)
+
+app.get('/parent/dashboard', isAuthenticated, async (req, res) => {
+    try {
+        // Fetch the parent user using session userId
+        const parent = await User.findById(req.session.userId);
+        
+        // Check if the logged-in user is a parent, otherwise redirect to login
+        if (!parent || parent.role !== 'parent') {
+            return res.redirect('/login'); // Redirect to login or another appropriate page
+        }
+
+        // Log the parent's rollNumber to check if it's correct
+        console.log("Parent's roll number: ", parent.rollNumber);
+
+        // Fetch the child (student) data using the parent's roll number
+        const student = await User.findOne({ rollNumber: parent.rollNumber, role: 'student' });
+
+        // Log the student fetched for debugging
+        console.log("Fetched Student Data: ", student);
+
+        // Handle case when the student is not found
+        if (!student) {
+            return res.render('parent-panel', {
+                parent: parent,
+                student: null,
+                jobs: [],
+                error: 'Student data not found.'
+            });
+        }
+
+        // Fetch the list of jobs associated with the student
+        const jobs = await Job.find({
+            $or: [
+                { applicants: student._id },
+                { shortlisted: student._id },
+                { interviewed: student._id },
+                { placed: student._id }
+            ]
+        });
+
+        // Render the parent panel page with the data
+        res.render('parent-panel', {
+            parent: parent,
+            student: student,
+            jobs: jobs,
+            error: null  // No error, so passing null
+        });
+    } catch (err) {
+        console.error("Error while fetching parent or student data:", err);
+        // Render the parent-panel page with an error message in case of any issue
+        res.render('parent-panel', {
+            parent: null,
+            student: null,
+            jobs: [],
+            error: 'An error occurred while fetching data.'
+        });
+    }
+});
+
+
 app.listen(8000, () => {
     console.log('Server started on port 8000');
-});      
+}); 

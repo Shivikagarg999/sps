@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,97 +15,96 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(to bottom, #1e3c72, #2a5298);
-            background-size: cover;
-            background-position: center;
+            background-color: rgb(83, 83, 114);
             color: #fff;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Navbar Styling */
-        nav {
-            background-color: #333;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Sidebar Navbar */
+        .sidebar {
             position: fixed;
             top: 0;
-            width: 100%;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #100f0f;
+            padding: 20px;
+            color: #fff;
             z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
         }
 
-        nav a {
+        .sidebar a {
+            display: block;
             color: #fff;
             text-decoration: none;
             font-size: 1.2rem;
-            margin: 0 20px;
-            transition: color 0.3s ease;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
 
-        /* Teacher Dashboard Link */
+        .sidebar a:hover {
+            background-color: #ff7e5f;
+        }
+
         .dashboard-link {
-            font-size: 1.5rem;
             font-weight: bold;
             color: #FFD700; /* Gold color to make it stand out */
         }
 
-        /* View Job Postings Link */
-        .jobs-link {
-            font-size: 1.2rem;
-            color: white;
-        }
-
-        nav a:hover {
-            color: #007BFF;
-        }
-
-        /* Navbar Filter Form */
+        /* Filter Form inside Sidebar */
         .filter-form {
             display: flex;
-            align-items: center;
             gap: 15px;
+            margin-top: 20px;
+            flex-direction: column;
         }
 
-        .filter-form select, .filter-form button {
+        .filter-form select,
+        .filter-form button {
             padding: 8px 15px;
             font-size: 1rem;
-            background-color: #007BFF;
+            background-color: #ff7e5f;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s;
         }
 
-        .filter-form select:hover, .filter-form button:hover {
-            background-color: #0056b3;
+        .filter-form select:hover,
+        .filter-form button:hover {
+            background-color: #ff5733;
         }
 
-        /* Container for content */
-        .container {
-            max-width: 1200px;
-            margin: 100px auto 20px;
-            text-align: center;
+        /* Main Content Area */
+        .main-content {
+            margin-left: 270px; /* Offset by the width of sidebar */
+            padding: 20px;
         }
 
         h1, h2 {
             font-size: 2.5rem;
-            margin-bottom: 20px;
+            color: #fff;
             font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 30px;
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             color: black;
-            font: bold;
         }
 
-        table th, table td {
+        table th,
+        table td {
             padding: 15px;
             text-align: center;
             border: 1px solid #ddd;
@@ -121,55 +121,67 @@
         }
 
         table tr:hover {
-            background-color: rgba(0, 123, 255, 0.1);
+            background-color: rgba(255, 87, 34, 0.1);
         }
 
         p {
             font-size: 1.2rem;
             color: #f4f4f4;
+            text-align: center;
         }
 
-        /* Responsive design */
+        /* Responsive Design */
         @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 220px;
+            }
+
             h1 {
                 font-size: 2rem;
             }
 
-            .filter-form select, .filter-form button {
-                font-size: 1rem;
-                padding: 8px;
-            }
-
-            table th, table td {
-                font-size: 1rem;
+            .filter-form {
+                flex-direction: column;
+                gap: 10px;
             }
         }
 
         @media (max-width: 480px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 80px;
+            }
+
             h1 {
                 font-size: 1.6rem;
             }
 
-            .filter-form select, .filter-form button {
-                width: 100%;
-                font-size: 1rem;
-            }
-
             table th, table td {
-                font-size: 0.9rem;
+                font-size: 1rem;
             }
         }
     </style>
 </head>
+
 <body>
-    <!-- Navbar -->
-    <nav>
-        <div>
-            <a href="/teacher/dashboard" class="dashboard-link">Teacher Dashboard</a>
-            <a href="/jobs" class="jobs-link">View Job Postings</a>
-            <a href="/analytics" class="jobs-link">View Analytics</a>
-        </div>
-        <!-- Filter Form in Navbar -->
+    <!-- Left Sidebar Navbar -->
+    <div class="sidebar">
+        <a href="/teacher/dashboard" class="dashboard-link">Teacher Dashboard</a>
+        <a href="/jobs" class="jobs-link">View Job Postings</a>
+        <a href="/analytics" class="jobs-link">View Analytics</a>
+
+        <!-- Filter Form in Sidebar -->
         <form method="GET" action="/teacher/dashboard" class="filter-form">
             <label for="branch" style="color: white;">Filter by Branch:</label>
             <select name="branch" id="branch">
@@ -183,10 +195,10 @@
             </select>
             <button type="submit">Filter</button>
         </form>
-    </nav>
+    </div>
 
-    <!-- Main content -->
-    <div class="container">
+    <!-- Main Content -->
+    <div class="main-content">
         <h1>Welcome, Teacher!</h1>
 
         <h2>Students List</h2>
@@ -215,5 +227,7 @@
             <p>No students found.</p>
         <% } %>
     </div>
+
 </body>
+
 </html>
