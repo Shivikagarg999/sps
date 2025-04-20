@@ -1,173 +1,305 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <title>Register</title>
+    <title>Register | Smart Placement Hub</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
     <style>
-        /* Global reset and body styling */
+        :root {
+            --primary: #6c63ff;
+            --secondary: #ff6584;
+            --accent: #42b883;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --light: #f8f9fa;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to bottom right, #2C3E50, #1A252F); /* Dark gradient background */
-            color: #fff;
-            height: 100vh;
+            background-color: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Poppins', sans-serif;
-            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
         }
-
+        
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            filter: blur(30px);
+        }
+        
         .container {
-            background: rgba(255, 255, 255, 0.1); /* Transparent background */
-            border-radius: 15px;
-            padding: 40px;
-            backdrop-filter: blur(10px); /* Frosted glass effect */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 400px;
-            border: 1px solid rgba(255, 255, 255, 0.2); /* Light border */
+            max-width: 450px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 0.8s forwards 0.3s;
         }
-
-        h1 {
-            color: #f39c12; /* Bright orange */
+        
+        .logo-container {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
-            border-radius: 12px;
-            background-color: rgba(0, 0, 0, 0.2); /* Semi-transparent background */
-            color: black;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s, background-color 0.3s;
-        }
-
-        .select {
-            background-color: rgba(255, 255, 255, 0.2); /* Ensure dropdown is visible */
-            color: black; /* Dark text for better contrast */
-        }
-
-        input:focus,
-        select:focus {
-            border-color: #f39c12; /* Orange border on focus */
-            background-color: rgba(255, 255, 255, 0.3); /* Focus effect */
-            color: black;
-        }
-
-        .register-button {
-            width: 100%;
-            padding: 15px;
-            background: #e67e22; /* Orange button */
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-
-        .register-button:hover {
-            background-color: #d35400; /* Darker orange on hover */
-            color: white;
-        }
-
-        .icon {
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .icon img {
+        
+        .logo {
             width: 100px;
             height: auto;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 10px rgba(108, 99, 255, 0.5));
         }
-
-        .bck {
-            width: 80px;
-            padding: 15px;
-            display: block;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: #f39c12; /* Orange color */
-            text-decoration: none;
-            align-self: center;
+        
+        h1 {
+            font-family: 'Raleway', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
-
-        .baackk {
+        
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+        }
+        
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            padding-left: 3rem;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 12px;
+        }
+        
+        .register-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), #8a82ff);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
         }
-
-        .bck i {
-            margin-right: 7px;
-            font-weight: 900;
+        
+        .register-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+            background: linear-gradient(135deg, #8a82ff, var(--primary));
         }
-
+        
+        .register-button:active {
+            transform: translateY(0);
+        }
+        
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            color: var(--primary);
+        }
+        
+        .back-button i {
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover i {
+            transform: translateX(-3px);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         @media (max-width: 480px) {
             .container {
                 width: 90%;
+                padding: 2rem 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
             }
         }
     </style>
 </head>
 
 <body>
+    <!-- Floating background shapes -->
+    <div class="floating-shapes">
+        <div class="shape" style="width: 300px; height: 300px; top: 10%; left: 5%;"></div>
+        <div class="shape" style="width: 400px; height: 400px; bottom: 15%; right: 10%;"></div>
+        <div class="shape" style="width: 250px; height: 250px; top: 50%; left: 30%;"></div>
+    </div>
+
     <div class="container">
-        <div class="icon">
-            <img src="https://i.imgur.com/NfTte8r.jpeg" alt="Placement Logo">
-          </div>
-          <h1>Welcome to Smart Placement Hub</h1>
-        <!-- <h2>Register</h2> -->
+        <div class="logo-container">
+            <img src="https://i.imgur.com/NfTte8r.jpeg" alt="ABESIT Logo" class="logo">
+            <h1>Smart Placement Hub</h1>
+            <p class="welcome-text">Join our community to access placement resources and opportunities</p>
+        </div>
+        
         <form action="/register" method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <select name="role" class="select" required>
-                <option value="">Select Role</option>
-                <option value="student">Student</option>
-                <option value="teacher">Teacher</option>
-                <option value="parent">Parent</option>
-                <option value="crc">CRC</option>
-            </select>
-            <div id="role-specific-fields"></div> <!-- Dynamic field container -->
-            <button type="submit" class="register-button">Register</button>
-            <div class="baackk">
-                
-    <a href="/" class="bck"><i class="fa-solid fa-arrow-left-long"></i>Back</a>
+            <div class="input-group">
+                <i class="fas fa-user input-icon"></i>
+                <input type="text" name="username" placeholder="Username" required>
             </div>
+            
+            <div class="input-group">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            
+            <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            
+            <div class="input-group">
+                <i class="fas fa-user-tag input-icon"></i>
+                <select name="role" required>
+                    <option value="">Select Role</option>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="parent">Parent</option>
+                    <option value="crc">CRC</option>
+                </select>
+            </div>
+            
+            <div id="role-specific-fields"></div> <!-- Dynamic field container -->
+            
+            <button type="submit" class="register-button">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+            
+            <a href="/" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
         </form>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // Animate floating shapes
+            anime({
+                targets: '.shape',
+                translateX: function() {
+                    return anime.random(-50, 50);
+                },
+                translateY: function() {
+                    return anime.random(-50, 50);
+                },
+                duration: function() {
+                    return anime.random(8000, 15000);
+                },
+                easing: 'easeInOutSine',
+                loop: true,
+                direction: 'alternate'
+            });
+            
+            // Role-specific fields logic
             const roleSelect = document.querySelector('select[name="role"]');
             const roleSpecificFields = document.getElementById('role-specific-fields');
 
@@ -187,14 +319,18 @@
 
                 if (roleSelect.value === "student") {
                     // Roll Number Field
-                    const rollNumberInput = document.createElement("input");
-                    rollNumberInput.type = "text";
-                    rollNumberInput.name = "rollNumber";
-                    rollNumberInput.placeholder = "Enter Roll Number";
-                    rollNumberInput.required = true;
-                    roleSpecificFields.appendChild(rollNumberInput);
+                    const rollNumberGroup = document.createElement("div");
+                    rollNumberGroup.className = "input-group";
+                    rollNumberGroup.innerHTML = `
+                        <i class="fas fa-id-card input-icon"></i>
+                        <input type="text" name="rollNumber" placeholder="Enter Roll Number" required>
+                    `;
+                    roleSpecificFields.appendChild(rollNumberGroup);
 
                     // Branch Dropdown
+                    const branchGroup = document.createElement("div");
+                    branchGroup.className = "input-group";
+                    
                     const branchSelect = document.createElement("select");
                     branchSelect.name = "branch";
                     branchSelect.required = true;
@@ -214,20 +350,44 @@
                         option.textContent = branch;
                         branchSelect.appendChild(option);
                     });
-
-                    roleSpecificFields.appendChild(branchSelect);
+                    
+                    branchGroup.innerHTML = `<i class="fas fa-code-branch input-icon"></i>`;
+                    branchGroup.appendChild(branchSelect);
+                    roleSpecificFields.appendChild(branchGroup);
+                    
+                    // Animate new fields
+                    anime({
+                        targets: rollNumberGroup,
+                        opacity: [0, 1],
+                        translateY: [20, 0],
+                        duration: 500,
+                        easing: 'easeOutExpo'
+                    });
+                    
+                    anime({
+                        targets: branchGroup,
+                        opacity: [0, 1],
+                        translateY: [20, 0],
+                        duration: 500,
+                        delay: 100,
+                        easing: 'easeOutExpo'
+                    });
                 }
 
                 if (roleSelect.value === "parent") {
                     // Student Roll Number Field
-                    const rollNumberInput = document.createElement("input");
-                    rollNumberInput.type = "text";
-                    rollNumberInput.name = "studentRollNumber";
-                    rollNumberInput.placeholder = "Enter Your Child's Roll Number";
-                    rollNumberInput.required = true;
-                    roleSpecificFields.appendChild(rollNumberInput);
+                    const rollNumberGroup = document.createElement("div");
+                    rollNumberGroup.className = "input-group";
+                    rollNumberGroup.innerHTML = `
+                        <i class="fas fa-id-card input-icon"></i>
+                        <input type="text" name="studentRollNumber" placeholder="Enter Your Child's Roll Number" required>
+                    `;
+                    roleSpecificFields.appendChild(rollNumberGroup);
 
                     // Student Branch Dropdown
+                    const branchGroup = document.createElement("div");
+                    branchGroup.className = "input-group";
+                    
                     const branchSelect = document.createElement("select");
                     branchSelect.name = "studentBranch";
                     branchSelect.required = true;
@@ -247,12 +407,31 @@
                         option.textContent = branch;
                         branchSelect.appendChild(option);
                     });
-
-                    roleSpecificFields.appendChild(branchSelect);
+                    
+                    branchGroup.innerHTML = `<i class="fas fa-code-branch input-icon"></i>`;
+                    branchGroup.appendChild(branchSelect);
+                    roleSpecificFields.appendChild(branchGroup);
+                    
+                    // Animate new fields
+                    anime({
+                        targets: rollNumberGroup,
+                        opacity: [0, 1],
+                        translateY: [20, 0],
+                        duration: 500,
+                        easing: 'easeOutExpo'
+                    });
+                    
+                    anime({
+                        targets: branchGroup,
+                        opacity: [0, 1],
+                        translateY: [20, 0],
+                        duration: 500,
+                        delay: 100,
+                        easing: 'easeOutExpo'
+                    });
                 }
             });
         });
-        
     </script>
-
+</body>
 </html>

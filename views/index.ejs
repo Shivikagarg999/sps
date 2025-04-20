@@ -4,138 +4,297 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Placement Hub</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <title>Login | Smart Placement Hub</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
   <style>
-      body {
+    :root {
+      --primary: #6c63ff;
+      --secondary: #ff6584;
+      --accent: #42b883;
+      --dark: #1a1a2e;
+      --darker: #16213e;
+      --light: #f8f9fa;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom right, #2C3E50, #1A252F); /* Dark gradient background */
-      color: #fff;
+      background-color: var(--dark);
+      color: var(--light);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      padding: 10px;
+      overflow-x: hidden;
+      position: relative;
     }
-
+    
+    .floating-shapes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+    
+    .shape {
+      position: absolute;
+      opacity: 0.1;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      filter: blur(30px);
+    }
+    
     .container {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(26, 26, 46, 0.8);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 450px;
       backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 30px;
-      width: 100%;
-      max-width: 400px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transform: translateY(20px);
+      opacity: 0;
+      animation: fadeInUp 0.8s forwards 0.3s;
+    }
+    
+    .logo-container {
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      margin-bottom: 1.5rem;
     }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 15px;
-      color: #f39c12; /* Bright orange color */
-    }
-
-    select,
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px 15px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      background: rgba(255, 255, 255, 0.2);
-      color: black;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-
-    select:focus,
-    input[type="text"]:focus,
-    input[type="email"]:focus,
-    input[type="password"]:focus {
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
-    }
-
-    button {
-      width: 100%;
-      padding: 12px 15px;
-      margin: 15px 0;
-      border: none;
-      border-radius: 8px;
-      background: #e67e22; /* Orange button */
-      color: #fff;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    button:hover {
-      background: #d35400; /* Darker orange on hover */
-      box-shadow: 0 8px 15px rgba(0, 255, 0, 0.2);
-    }
-
-    .register-link {
-      display: block;
-      margin-top: 15px;
-      font-size: 0.9rem;
-      color: #f39c12; /* Orange text for the link */
-      text-decoration: none;
-    }
-
-    .register-link:hover {
-      text-decoration: underline;
-    }
-
-    .icon {
-      margin-bottom: 20px;
-    }
-
-    .icon img {
+    
+    .logo {
       width: 100px;
       height: auto;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 10px rgba(108, 99, 255, 0.5));
     }
-
-    @media (max-width: 768px) {
+    
+    h1 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .welcome-text {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+    
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    
+    .input-group {
+      position: relative;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1rem;
+    }
+    
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      padding-left: 3rem;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 12px;
+    }
+    
+    .login-button {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--primary), #8a82ff);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+    }
+    
+    .login-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+      background: linear-gradient(135deg, #8a82ff, var(--primary));
+    }
+    
+    .login-button:active {
+      transform: translateY(0);
+    }
+    
+    .register-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1.5rem;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    
+    .register-link:hover {
+      color: var(--primary);
+    }
+    
+    .register-link i {
+      margin-right: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .register-link:hover i {
+      transform: translateX(3px);
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        width: 90%;
+        padding: 2rem 1.5rem;
+      }
+      
       h1 {
-        font-size: 1.5rem;
-      }
-
-      button {
-        padding: 10px;
+        font-size: 1.7rem;
       }
     }
-  </style>
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="icon">
-      <img src="https://i.imgur.com/NfTte8r.jpeg">
-    </div>
-    <h1>Welcome to Smart Placement Hub</h1>
-    <form action="/login" method="POST">
-      <select name="role" required>
-        <option value="" disabled selected>Select your role</option>
-        <option value="student">Student</option>
-        <option value="teacher">Teacher</option>
-        <option value="parent">Parent</option>
-        <option value="crc">CRC</option>
-      </select>
-      <input type="text" name="username" placeholder="Username" required>
-      <input type="email" name="email" placeholder="Email" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-    <a href="/register" class="register-link">Don't have an account? Register here</a>
+  <!-- Floating background shapes -->
+  <div class="floating-shapes">
+    <div class="shape" style="width: 300px; height: 300px; top: 10%; left: 5%;"></div>
+    <div class="shape" style="width: 400px; height: 400px; bottom: 15%; right: 10%;"></div>
+    <div class="shape" style="width: 250px; height: 250px; top: 50%; left: 30%;"></div>
   </div>
+
+  <div class="container">
+    <div class="logo-container">
+      <img src="https://i.imgur.com/NfTte8r.jpeg" alt="ABESIT Logo" class="logo">
+      <h1>Smart Placement Hub</h1>
+      <p class="welcome-text">Sign in to access your placement dashboard</p>
+    </div>
+    
+    <form action="/login" method="POST">
+      <div class="input-group">
+        <i class="fas fa-user-tag input-icon"></i>
+        <select name="role" required>
+          <option value="" disabled selected>Select your role</option>
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+          <option value="parent">Parent</option>
+          <option value="crc">CRC</option>
+        </select>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-user input-icon"></i>
+        <input type="text" name="username" placeholder="Username" required>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-envelope input-icon"></i>
+        <input type="email" name="email" placeholder="Email" required>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-lock input-icon"></i>
+        <input type="password" name="password" placeholder="Password" required>
+      </div>
+      
+      <button type="submit" class="login-button">
+        <i class="fas fa-sign-in-alt"></i> Login
+      </button>
+      
+      <a href="/register" class="register-link">
+        <i class="fas fa-user-plus"></i> Don't have an account? Register here
+      </a>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Animate floating shapes
+      anime({
+        targets: '.shape',
+        translateX: function() {
+          return anime.random(-50, 50);
+        },
+        translateY: function() {
+          return anime.random(-50, 50);
+        },
+        duration: function() {
+          return anime.random(8000, 15000);
+        },
+        easing: 'easeInOutSine',
+        loop: true,
+        direction: 'alternate'
+      });
+    });
+  </script>
 </body>
 
 </html>

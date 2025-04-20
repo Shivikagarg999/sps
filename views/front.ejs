@@ -3,344 +3,1352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Placement Hub- ABESIT</title>
+    <title>Smart Placement Hub 2025 - ABESIT</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cookie&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@800&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
+        :root {
+            --primary: #6c63ff;
+            --secondary: #ff6584;
+            --accent: #42b883;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --light: #f8f9fa;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --info: #2196f3;
+        }
+        
+        * {
             margin: 0;
             padding: 0;
-            background-color: #121212;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-        h1, h2 {
-            text-align: center;
-            color: rgba(255, 165, 0, 0.7);
-            margin: 0;
-            padding: 10px;
-        }
-        h1 {
-            font-size: 36px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        h2 {
-            font-size: 24px;
-            margin-top: 15px;
-        }
-        .heads {
-            position: absolute;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .heads img{
-            height: 100px;
-        }  
-        .heads h1 {
-    color: white;
-    font-size: 13vh;
-    font-family: "Rye", serif;
-    font-weight: 600;
-    font-style: normal;
-    text-shadow: 3px 3px 10px rgba(255, 165, 0, 0.7), 3px 3px 10px rgba(0, 0, 255, 0.7); /* Orange and Blue shadow */
-}
-
-        .buttons{
-            display: flex;
-            align-self: center;
-            justify-items: center;
-            align-items: center;
-        }
-        .buttons a {
-    text-decoration: none;
-    margin: 4px;
-    padding: 12px 20px;  /* Adjusted padding for better spacing */
-    background: linear-gradient(145deg, #ff6f61, #ff3d2e);  /* Gradient background */
-    color: white;
-    font-weight: 500;
-    font-size: 16px;  /* Increased font size */
-    border: 1px solid #ff3d2e;  /* Border color matching the button */
-    border-radius: 50px;  /* Rounded button corners */
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);  /* Subtle shadow for depth */
-    transition: all 0.3s ease;  /* Smooth transition effect */
-}
-
-.buttons a:hover {
-    background: linear-gradient(145deg, #ff3d2e, #ff6f61);  /* Reversed gradient on hover */
-    transform: translateY(-4px);  /* Slightly raise the button on hover */
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);  /* Deeper shadow on hover */
-    border-color: #ff5722;  /* Change border color on hover */
-}
-
-        .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            grid-gap: 20px;
-            max-width: 1200px;
-            padding: 20px;
-            opacity: .3;
-            z-index: -22;
-            height: 100%;
-            overflow: hidden;
             box-sizing: border-box;
         }
-
-        /* Chart containers */
-        .chart-container {
-            background-color: #1c1c1c;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            padding: 20px;
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
             overflow: hidden;
         }
-
-        canvas {
-            width: 100% !important;
-            height: auto !important;
-            border-radius: 8px;
+        
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+            animation: fadeIn 1.5s ease-out;
         }
-
-        /* Styling for Pie charts */
-        .pie-chart {
-            border-radius: 8px;
-            padding: 20px;
-            background-color: #1c1c1c;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        
+        .logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 10px rgba(108, 99, 255, 0.5));
+            animation: float 6s ease-in-out infinite;
         }
-
-        /* Media query for responsiveness */
-        @media screen and (max-width: 768px) {
+        
+        h1 {
+            font-family: 'Raleway', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #8a82ff);
+            color: white;
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::before {
+            opacity: 1;
+        }
+        
+        .dashboard-section {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: none;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h2 {
+            font-family: 'Raleway', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .section-header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .card {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: rgba(26, 26, 46, 0.6);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .upcoming-companies {
+            grid-column: 1 / -1;
+        }
+        
+        /* Calendar Styles */
+        .calendar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .calendar-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .calendar-nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            padding: 0.5rem;
+            color: var(--secondary);
+        }
+        
+        .calendar-day {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 0.75rem;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .calendar-day:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+        
+        .calendar-day.empty {
+            background: transparent;
+            cursor: default;
+        }
+        
+        .calendar-day.empty:hover {
+            background: transparent;
+            transform: none;
+        }
+        
+        .calendar-day-number {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            align-self: flex-end;
+        }
+        
+        .calendar-day.today .calendar-day-number {
+            background: var(--primary);
+            color: white;
+            width: 1.8rem;
+            height: 1.8rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .calendar-day.has-event::after {
+            content: '';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background: var(--secondary);
+        }
+        
+        .calendar-event {
+            font-size: 0.7rem;
+            background: rgba(108, 99, 255, 0.2);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            margin-top: 0.3rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .calendar-event:hover {
+            background: rgba(108, 99, 255, 0.4);
+        }
+        
+        .company-details-container {
+            margin-top: 2rem;
+            background: rgba(26, 26, 46, 0.6);
+            border-radius: 10px;
+            padding: 1.5rem;
+            display: none;
+        }
+        
+        .company-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .company-details-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .close-details-btn {
+            background: none;
+            border: none;
+            color: var(--secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .company-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .company-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .company-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .company-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .company-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .company-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+        
+        .company-package {
+            font-weight: 600;
+            color: var(--accent);
+        }
+        
+        .company-role {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            filter: blur(30px);
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .scroll-down {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .scroll-down:hover {
+            opacity: 1;
+        }
+        
+        .scroll-down i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        @media (max-width: 768px) {
             h1 {
-                font-size: 28px;
+                font-size: 2.5rem;
             }
-
-            h2 {
-                font-size: 20px;
+            
+            .tagline {
+                font-size: 1.2rem;
             }
-
-            .container {
-                grid-template-columns: 1fr 1fr;
-                padding: 10px;
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
             }
-            .heads h1{
-                font-size: 7vh;
+            
+            .btn {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
             }
-            .chart-container {
-                padding: 10px;
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+            
+            .calendar-day {
+                min-height: 60px;
+                padding: 0.5rem;
+            }
+            
+            .calendar-event {
+                display: none;
+            }
+        }
+        
+        /* Loading animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .loader-content {
+            text-align: center;
+        }
+        
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
         }
     </style>
 </head>
 <body>
-    <div class="heads">
-        <img src="https://i.imgur.com/NfTte8r.jpeg">
-        <h1>Smart Placement</h1>
-        <h1>Hub</h1>
-        <div class="buttons">
-            <a href="/analytics">Dashboard</a>
-            <a href="/index"> Get Started </a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOZlpQsW81TlRPPW5bQi0S2fQRSBKv6XrxQqLR7YTadrVNJQ/viewform">Write a review</a>
+    <!-- Loading Screen -->
+    <div class="loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <h2>Loading Smart Placement Hub</h2>
         </div>
     </div>
-    <div class="container">
-        <!-- Main Heading for the page -->
-        <h1>Smart Placement System</h1>
-        <h2>Placement Analytics Dashboard</h2>
 
-        <!-- Placement Trend Over Time -->
-        <div class="chart-container">
-            <h2>Placement Trend Over Time</h2>
-            <canvas id="placementTrend"></canvas>
-        </div>
-
-        <!-- Placement by Branch -->
-        <div class="chart-container">
-            <h2>Placement by Branch</h2>
-            <canvas id="placementByBranch"></canvas>
-        </div>
-
-        <!-- Placement by Company -->
-        <div class="chart-container">
-            <h2>Placement by Company</h2>
-            <canvas id="placementByCompany"></canvas>
-        </div>
-
-        <!-- Placement by Salary -->
-        <div class="chart-container">
-            <h2>Placement by Salary</h2>
-            <canvas id="salaryHistogram"></canvas>
-        </div>
+    <!-- Floating background shapes -->
+    <div class="floating-shapes">
+        <div class="shape" style="width: 300px; height: 300px; top: 10%; left: 5%; animation: float 15s infinite ease-in-out;"></div>
+        <div class="shape" style="width: 400px; height: 400px; bottom: 15%; right: 10%; animation: float 18s infinite ease-in-out 2s;"></div>
+        <div class="shape" style="width: 250px; height: 250px; top: 50%; left: 30%; animation: float 12s infinite ease-in-out 1s;"></div>
     </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-content">
+            <img src="https://i.imgur.com/NfTte8r.jpeg" alt="ABESIT Logo" class="logo">
+            <h1>Smart Placement Hub</h1>
+            <p class="tagline">ABESIT's Premier Placement Analytics Platform - 2025</p>
+            <div class="buttons">
+                <a href="#" class="btn btn-primary" id="viewDashboardBtn">
+                    <i class="fas fa-chart-line"></i> View Dashboard
+                </a>
+                <a href="/index" class="btn btn-secondary">
+                    <i class="fas fa-user-graduate"></i>Portal
+                </a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdOZlpQsW81TlRPPW5bQi0S2fQRSBKv6XrxQqLR7YTadrVNJQ/viewform" class="btn btn-secondary">
+                    <i class="fas fa-comment-alt"></i> Write a Review
+                </a>
+            </div>
+        </div>
+        <div class="scroll-down" id="scrollDown">
+            <i class="fas fa-chevron-down"></i>
+            <span>Explore Dashboard</span>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard-section" id="dashboard">
+        <div class="section-header">
+            <h2>Placement Analytics 2025</h2>
+            <p>Comprehensive insights into ABESIT's placement statistics, trends, and upcoming recruitment drives</p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">87%</div>
+                <div class="stat-label">Placement Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">42</div>
+                <div class="stat-label">Companies Visited</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">₹12.5L</div>
+                <div class="stat-label">Highest Package</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">₹6.8L</div>
+                <div class="stat-label">Average Package</div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Placement Trend Over Time -->
+            <div class="card">
+                <h3>Placement Trend 2025</h3>
+                <div class="chart-container">
+                    <canvas id="placementTrend"></canvas>
+                </div>
+            </div>
+
+            <!-- Placement by Branch -->
+            <div class="card">
+                <h3>Placement by Branch</h3>
+                <div class="chart-container">
+                    <canvas id="placementByBranch"></canvas>
+                </div>
+            </div>
+
+            <!-- Placement by Company -->
+            <div class="card">
+                <h3>Top Recruiters</h3>
+                <div class="chart-container">
+                    <canvas id="placementByCompany"></canvas>
+                </div>
+            </div>
+
+            <!-- Placement by Salary -->
+            <div class="card">
+                <h3>Salary Distribution</h3>
+                <div class="chart-container">
+                    <canvas id="salaryHistogram"></canvas>
+                </div>
+            </div>
+
+            <!-- Upcoming Companies -->
+            <div class="card upcoming-companies">
+                <h3>Upcoming Recruitment Drives</h3>
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <div class="calendar-title" id="calendar-month-year">May 2025</div>
+                        <div class="calendar-nav">
+                            <button class="calendar-nav-btn" id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                            <button class="calendar-nav-btn" id="next-month"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-grid" id="calendar-days-header">
+                        <div class="calendar-day-header">Sun</div>
+                        <div class="calendar-day-header">Mon</div>
+                        <div class="calendar-day-header">Tue</div>
+                        <div class="calendar-day-header">Wed</div>
+                        <div class="calendar-day-header">Thu</div>
+                        <div class="calendar-day-header">Fri</div>
+                        <div class="calendar-day-header">Sat</div>
+                    </div>
+                    
+                    <div class="calendar-grid" id="calendar-days"></div>
+                    
+                    <div class="company-details-container" id="company-details">
+                        <div class="company-details-header">
+                            <div class="company-details-title" id="selected-date-title">Companies on May 15, 2025</div>
+                            <button class="close-details-btn" id="close-details-btn">&times;</button>
+                        </div>
+                        <div class="company-list" id="company-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <script>
-        // Data passed from the server
-        const statsOverTime = <%- JSON.stringify(statsOverTime) %>;  // Placement trend by month
-        let placedStudents = <%- JSON.stringify(placedStudents) %>;  // Placement by branch
-        let companies = <%- JSON.stringify(companies) %>;  // Placement by company
-    
-        // Remove any null or undefined entries from placedStudents and companies
-        placedStudents = placedStudents.filter(item => item._id !== null && item.total !== null);
-        companies = companies.filter(item => item._id !== null && item.total !== null && item.salary !== null);
-    
-        // Line Graph: Placement Trend Over Time
-        const placementTrendCtx = document.getElementById('placementTrend').getContext('2d');
-        new Chart(placementTrendCtx, {
-            type: 'line',
-            data: {
-                labels: statsOverTime.map(item => 'Month ' + item._id),
-                datasets: [{
-                    label: 'Placed Students',
-                    data: statsOverTime.map(item => item.totalPlaced),
-                    borderColor: 'rgba(0, 255, 0, 1)',  // Green color
-                    fill: false
-                }]
+        // Sample data for upcoming companies
+        const upcomingCompanies = [
+            {
+                name: "Microsoft",
+                date: "2025-05-15",
+                roles: "Software Engineer, Data Scientist",
+                package: "₹18 LPA",
+                criteria: "CGPA: 8.5+"
             },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            color: '#ffffff'  // White Y-axis labels
+            {
+                name: "Amazon",
+                date: "2025-06-02",
+                roles: "SDE, Cloud Engineer",
+                package: "₹16 LPA",
+                criteria: "CGPA: 8.0+"
+            },
+            {
+                name: "Goldman Sachs",
+                date: "2025-06-18",
+                roles: "Financial Analyst, Tech Analyst",
+                package: "₹14 LPA",
+                criteria: "CGPA: 8.2+"
+            },
+            {
+                name: "Adobe",
+                date: "2025-07-05",
+                roles: "Product Designer, UX Engineer",
+                package: "₹15 LPA",
+                criteria: "CGPA: 8.0+"
+            },
+            {
+                name: "Google",
+                date: "2025-05-15",
+                roles: "Software Engineer, ML Engineer",
+                package: "₹20 LPA",
+                criteria: "CGPA: 9.0+"
+            },
+            {
+                name: "TCS",
+                date: "2025-05-20",
+                roles: "System Engineer, Business Analyst",
+                package: "₹4.5 LPA",
+                criteria: "CGPA: 7.0+"
+            },
+            {
+                name: "Infosys",
+                date: "2025-05-22",
+                roles: "Software Developer, Data Analyst",
+                package: "₹4.8 LPA",
+                criteria: "CGPA: 7.5+"
+            },
+            {
+                name: "Wipro",
+                date: "2025-05-28",
+                roles: "Project Engineer, Cloud Specialist",
+                package: "₹5.0 LPA",
+                criteria: "CGPA: 7.0+"
+            }
+        ];
+
+        // Calendar functionality
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        function generateCalendar(month, year) {
+            const calendarDays = document.getElementById('calendar-days');
+            calendarDays.innerHTML = '';
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+            
+            // Set month and year title
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById('calendar-month-year').textContent = `${monthNames[month]} ${year}`;
+            
+            // Create previous month's days
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day empty';
+                dayElement.textContent = daysInPrevMonth - i;
+                calendarDays.appendChild(dayElement);
+            }
+            
+            // Create current month's days
+            const today = new Date();
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.innerHTML = `<div class="calendar-day-number">${i}</div>`;
+                
+                // Check if today
+                if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                    dayElement.classList.add('today');
+                }
+                
+                // Check if has events
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                const companiesOnDay = upcomingCompanies.filter(company => company.date === dateStr);
+                
+                if (companiesOnDay.length > 0) {
+                    dayElement.classList.add('has-event');
+                    
+                    // Add first event name (for display in calendar cell)
+                    if (companiesOnDay.length > 0) {
+                        const eventElement = document.createElement('div');
+                        eventElement.className = 'calendar-event';
+                        eventElement.textContent = companiesOnDay[0].name;
+                        dayElement.appendChild(eventElement);
+                    }
+                }
+                
+                // Add click event
+                dayElement.addEventListener('click', () => {
+                    showCompaniesForDate(dateStr, i, month, year);
+                });
+                
+                calendarDays.appendChild(dayElement);
+            }
+            
+            // Create next month's days
+            const totalDays = firstDay + daysInMonth;
+            const remainingDays = 7 - (totalDays % 7);
+            if (remainingDays < 7) {
+                for (let i = 1; i <= remainingDays; i++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day empty';
+                    dayElement.textContent = i;
+                    calendarDays.appendChild(dayElement);
+                }
+            }
+        }
+        
+        function showCompaniesForDate(dateStr, day, month, year) {
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const dateTitle = `${monthNames[month]} ${day}, ${year}`;
+            
+            document.getElementById('selected-date-title').textContent = `Companies on ${dateTitle}`;
+            
+            const companyList = document.getElementById('company-list');
+            companyList.innerHTML = '';
+            
+            const companiesOnDay = upcomingCompanies.filter(company => company.date === dateStr);
+            
+            if (companiesOnDay.length === 0) {
+                const noCompanies = document.createElement('div');
+                noCompanies.textContent = 'No companies scheduled for this date';
+                noCompanies.style.textAlign = 'center';
+                noCompanies.style.padding = '1rem';
+                noCompanies.style.opacity = '0.7';
+                companyList.appendChild(noCompanies);
+            } else {
+                companiesOnDay.forEach(company => {
+                    const companyCard = document.createElement('div');
+                    companyCard.className = 'company-card';
+                    companyCard.innerHTML = `
+                        <div class="company-name">${company.name}</div>
+                        <div class="company-date">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>${dateTitle}</span>
+                        </div>
+                        <div class="company-role">${company.roles}</div>
+                        <div class="company-details">
+                            <span class="company-package">${company.package}</span>
+                            <span class="company-criteria">${company.criteria}</span>
+                        </div>
+                    `;
+                    companyList.appendChild(companyCard);
+                });
+            }
+            
+            document.getElementById('company-details').style.display = 'block';
+            
+            // Scroll to details
+            document.getElementById('company-details').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+        
+        // Initialize calendar
+        document.addEventListener('DOMContentLoaded', () => {
+            generateCalendar(currentMonth, currentYear);
+            
+            // Navigation buttons
+            document.getElementById('prev-month').addEventListener('click', () => {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                generateCalendar(currentMonth, currentYear);
+            });
+            
+            document.getElementById('next-month').addEventListener('click', () => {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                generateCalendar(currentMonth, currentYear);
+            });
+            
+            // Close details button
+            document.getElementById('close-details-btn').addEventListener('click', () => {
+                document.getElementById('company-details').style.display = 'none';
+            });
+        });
+
+        // Simulate loading
+        setTimeout(() => {
+            document.querySelector('.loader').style.opacity = '0';
+            setTimeout(() => {
+                document.querySelector('.loader').style.display = 'none';
+            }, 500);
+        }, 1500);
+
+        // Sample data for 2025 placements (realistic data)
+        const statsOverTime = [
+            { _id: 1, totalPlaced: 15 },
+            { _id: 2, totalPlaced: 28 },
+            { _id: 3, totalPlaced: 42 },
+            { _id: 4, totalPlaced: 65 },
+            { _id: 5, totalPlaced: 89 },
+            { _id: 6, totalPlaced: 112 },
+            { _id: 7, totalPlaced: 135 },
+            { _id: 8, totalPlaced: 158 },
+            { _id: 9, totalPlaced: 182 },
+            { _id: 10, totalPlaced: 210 },
+            { _id: 11, totalPlaced: 235 },
+            { _id: 12, totalPlaced: 260 }
+        ];
+
+        const placedStudents = [
+            { _id: "Computer Science", total: 85 },
+            { _id: "Information Technology", total: 72 },
+            { _id: "Electronics", total: 45 },
+            { _id: "Mechanical", total: 38 },
+            { _id: "Civil", total: 20 }
+        ];
+
+        const companies = [
+            { _id: "TCS", total: 35, salary: 4.5 },
+            { _id: "Infosys", total: 28, salary: 4.8 },
+            { _id: "Wipro", total: 22, salary: 5.0 },
+            { _id: "Accenture", total: 18, salary: 5.5 },
+            { _id: "Cognizant", total: 15, salary: 6.0 },
+            { _id: "Amazon", total: 12, salary: 16.0 },
+            { _id: "Microsoft", total: 10, salary: 18.0 },
+            { _id: "Google", total: 8, salary: 20.0 },
+            { _id: "Adobe", total: 7, salary: 15.0 },
+            { _id: "Goldman Sachs", total: 6, salary: 14.0 }
+        ];
+
+        // Navigation
+        document.getElementById('viewDashboardBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('dashboard').style.display = 'block';
+            window.scrollTo({
+                top: document.getElementById('dashboard').offsetTop,
+                behavior: 'smooth'
+            });
+        });
+
+        document.getElementById('scrollDown').addEventListener('click', () => {
+            document.getElementById('dashboard').style.display = 'block';
+            window.scrollTo({
+                top: document.getElementById('dashboard').offsetTop,
+                behavior: 'smooth'
+            });
+        });
+
+        // Initialize charts when dashboard is visible
+        const initCharts = () => {
+            // Line Graph: Placement Trend Over Time
+            const placementTrendCtx = document.getElementById('placementTrend').getContext('2d');
+            new Chart(placementTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Placements',
+                        data: statsOverTime.map(item => item.totalPlaced),
+                        borderColor: '#6c63ff',
+                        backgroundColor: 'rgba(108, 99, 255, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#6c63ff',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(26, 26, 46, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            usePointStyle: true
                         }
                     },
-                    x: {
-                        ticks: {
-                            color: '#ffffff'  // White X-axis labels
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
                         }
                     }
+                }
+            });
+
+            // Doughnut Chart: Placement by Branch
+            const placementByBranchCtx = document.getElementById('placementByBranch').getContext('2d');
+            new Chart(placementByBranchCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: placedStudents.map(item => item._id),
+                    datasets: [{
+                        data: placedStudents.map(item => item.total),
+                        backgroundColor: [
+                            '#6c63ff',
+                            '#ff6584',
+                            '#42b883',
+                            '#ffc107',
+                            '#17a2b8'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: '#ffffff'  // White legend labels
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(26, 26, 46, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            usePointStyle: true
                         }
                     }
                 }
-            }
-        });
-    
-        // Pie Chart: Placement by Branch
-        const placementByBranchCtx = document.getElementById('placementByBranch').getContext('2d');
-        new Chart(placementByBranchCtx, {
-            type: 'pie',
-            data: {
-                labels: placedStudents.map(item => item._id),
-                datasets: [{
-                    data: placedStudents.map(item => item.total),
-                    backgroundColor: [
-                        '#FF6347',  // Tomato
-                        '#3CB371',  // MediumSeaGreen
-                        '#1E90FF',  // DodgerBlue
-                        '#FFD700',  // Gold
-                        '#8A2BE2',  // BlueViolet
-                        '#FF4500'   // OrangeRed
-                    ],
-                    borderColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: '#ffffff'  // White legend labels
-                        }
-                    }
-                }
-            }
-        });
-    
-        // Pie Chart: Placement by Company
-        const placementByCompanyCtx = document.getElementById('placementByCompany').getContext('2d');
-        new Chart(placementByCompanyCtx, {
-            type: 'pie',
-            data: {
-                labels: companies.map(item => item._id),
-                datasets: [{
-                    data: companies.map(item => item.total),
-                    backgroundColor: [
-                        '#FF6347',  // Tomato
-                        '#3CB371',  // MediumSeaGreen
-                        '#1E90FF',  // DodgerBlue
-                        '#FFD700',  // Gold
-                        '#8A2BE2',  // BlueViolet
-                        '#FF4500'   // OrangeRed
-                    ],
-                    borderColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: '#ffffff'  // White legend labels
-                        }
-                    }
-                }
-            }
-        });
-    
-        // Histogram: Placement by Salary
-        const salaryHistogramCtx = document.getElementById('salaryHistogram').getContext('2d');
-        new Chart(salaryHistogramCtx, {
-            type: 'bar',
-            data: {
-                labels: ['< 3L', '3L - 5L', '5L - 7L', '7L - 10L', '> 10L'],
-                datasets: [{
-                    label: 'Number of Placements',
-                    data: [
-                        companies.filter(company => company.salary < 3).length,
-                        companies.filter(company => company.salary >= 3 && company.salary <= 5).length,
-                        companies.filter(company => company.salary >= 5 && company.salary <= 7).length,
-                        companies.filter(company => company.salary >= 7 && company.salary <= 10).length,
-                        companies.filter(company => company.salary > 10).length
-                    ],
-                    backgroundColor: '#66BB6A',
-                    borderColor: '#388E3C',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            color: '#ffffff'  // White Y-axis labels
+            });
+
+            // Bar Chart: Placement by Company (Top 5)
+            const topCompanies = [...companies].sort((a, b) => b.total - a.total).slice(0, 5);
+            const placementByCompanyCtx = document.getElementById('placementByCompany').getContext('2d');
+            new Chart(placementByCompanyCtx, {
+                type: 'bar',
+                data: {
+                    labels: topCompanies.map(item => item._id),
+                    datasets: [{
+                        label: 'Students Placed',
+                        data: topCompanies.map(item => item.total),
+                        backgroundColor: [
+                            'rgba(108, 99, 255, 0.8)',
+                            'rgba(255, 101, 132, 0.8)',
+                            'rgba(66, 184, 131, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(23, 162, 184, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(108, 99, 255, 1)',
+                            'rgba(255, 101, 132, 1)',
+                            'rgba(66, 184, 131, 1)',
+                            'rgba(255, 193, 7, 1)',
+                            'rgba(23, 162, 184, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(26, 26, 46, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            usePointStyle: true
                         }
                     },
-                    x: {
-                        ticks: {
-                            color: '#ffffff'  // White X-axis labels
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: '#ffffff'  // White legend labels
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                stepSize: 5
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
                         }
                     }
                 }
-            }
+            });
+
+            // Histogram: Placement by Salary
+            const salaryHistogramCtx = document.getElementById('salaryHistogram').getContext('2d');
+            new Chart(salaryHistogramCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['< 5L', '5L - 10L', '10L - 15L', '15L - 20L', '> 20L'],
+                    datasets: [{
+                        label: 'Number of Offers',
+                        data: [
+                            companies.filter(company => company.salary < 5).length,
+                            companies.filter(company => company.salary >= 5 && company.salary < 10).length,
+                            companies.filter(company => company.salary >= 10 && company.salary < 15).length,
+                            companies.filter(company => company.salary >= 15 && company.salary < 20).length,
+                            companies.filter(company => company.salary >= 20).length
+                        ],
+                        backgroundColor: 'rgba(108, 99, 255, 0.6)',
+                        borderColor: 'rgba(108, 99, 255, 1)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(26, 26, 46, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            usePointStyle: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+        };
+
+        // Initialize charts when dashboard comes into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    initCharts();
+                    observer.unobserve(entry.target);
+                    
+                    // Animate company cards
+                    anime({
+                        targets: '.company-card',
+                        translateY: [50, 0],
+                        opacity: [0, 1],
+                        delay: anime.stagger(100),
+                        duration: 800,
+                        easing: 'easeOutExpo'
+                    });
+                }
+            });
+        }, { threshold: 0.1 });
+
+        observer.observe(document.getElementById('dashboard'));
+
+        // Animate hero section elements
+        anime({
+            targets: '.hero-content h1',
+            translateY: [-30, 0],
+            opacity: [0, 1],
+            duration: 1200,
+            easing: 'easeOutExpo'
+        });
+
+        anime({
+            targets: '.hero-content .tagline',
+            translateY: [20, 0],
+            opacity: [0, 1],
+            duration: 1000,
+            delay: 500,
+            easing: 'easeOutExpo'
+        });
+
+        anime({
+            targets: '.btn',
+            translateY: [20, 0],
+            opacity: [0, 1],
+            delay: anime.stagger(100, {start: 800}),
+            duration: 800,
+            easing: 'easeOutExpo'
+        });
+
+        // Animate floating shapes
+        anime({
+            targets: '.shape',
+            translateX: function() {
+                return anime.random(-50, 50);
+            },
+            translateY: function() {
+                return anime.random(-50, 50);
+            },
+            duration: function() {
+                return anime.random(8000, 15000);
+            },
+            easing: 'easeInOutSine',
+            loop: true,
+            direction: 'alternate'
         });
     </script>
-    
 </body>
 </html>
